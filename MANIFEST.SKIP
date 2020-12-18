@@ -64,4 +64,6 @@
 \.appveyor\.yml
 \.releaserc
 \.lwpcookies
+\.csv$
+\.zip$
 Locale-.*
