@@ -41,9 +41,9 @@ before_install:
   - build-perl
   - perl -V
   - cpanm -qin --skip-satisfied LWP::Simple::WithCache
-  - build-dist
   - cd $BUILD_DIR
-  - cpanm -qin --skip-satisfied Devel::Cover::Report::Coveralls Test::Pod::Spelling::CommonMistakes Test::Portability::Files Test::Pod::Coverage LWP::Simple::WithCache
+  - build-dist
+  - cpanm -qin --skip-satisfied Devel::Cover::Report::Coveralls Test::Pod::Spelling::CommonMistakes Test::Portability::Files Test::Pod::Coverage
 
 install:
   - cpanm -qin --skip-satisfied --installdeps --notest .
