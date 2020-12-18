@@ -11,3 +11,4 @@ README.md
 t/00-load.t
 t/gb.t
 t/lib/MyLogger.pm
+t/translate.t

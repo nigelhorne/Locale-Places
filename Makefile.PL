@@ -124,14 +124,13 @@ WriteMakefile(
 	  ? ('LICENSE'=> 'GPL')
 	  : ()),
 	BUILD_REQUIRES => {
-		'autodie' => 0,
-		'LWP::UserAgent::Throttled' => 0,
 	}, TEST_REQUIRES =>  {
 		'Test::Most' => 0,
 	}, PREREQ_PM => {
 		'CHI' => 0,
 		'DBI' => 0,
 		'DBD::CSV' => 0,
+		'File::Spec' => 0,
 		'Module::Info' => 0,
 		'Text::CSV' => 0,
 		'Text::xSV::Slurp' => 0,
