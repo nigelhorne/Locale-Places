@@ -130,6 +130,7 @@ WriteMakefile(
 		'CHI' => 0,
 		'DBI' => 0,
 		'DBD::CSV' => 0,
+		'File::pfopen' => 0,
 		'File::Spec' => 0,
 		'Module::Info' => 0,
 		'Text::CSV' => 0,

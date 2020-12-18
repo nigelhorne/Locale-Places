@@ -1,3 +1,4 @@
+Changes
 lib/Locale/Places.pm
 lib/Locale/Places/databases/GB.csv
 lib/Locale/Places/databases/GB.zip
@@ -9,6 +10,8 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 README.md
 t/00-load.t
+t/coverage.t
+t/critic.t
 t/gb.t
 t/lib/MyLogger.pm
 t/translate.t
