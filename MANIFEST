@@ -16,4 +16,5 @@ t/kwalitee.t
 t/lib/MyLogger.pm
 t/links.t
 t/manifest.t
+t/no404s.t
 t/translate.t

@@ -26,7 +26,7 @@ jobs:
       - run: perl -V
       - name: Install Dependencies
         run: |
-          cpanm -iqn --skip-satisfied File::Spec ExtUtils::MakeMaker LWP::Simple::WithCache LWP::Protocol::https
-          cpanm -iqn --skip-satisfied --installdeps --notest .
+          cpanm -iqn File::Spec ExtUtils::MakeMaker LWP::Simple::WithCache LWP::Protocol::https
+          cpanm -iqn --installdeps --notest .
       - name: Run Tests
         run: prove -l -b t
