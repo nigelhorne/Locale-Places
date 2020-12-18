@@ -42,8 +42,8 @@ before_install:
   - build-perl
   - perl -V
   - cd $BUILD_DIR
-  - build-dist
   - cpanm -qin --skip-satisfied Devel::Cover::Report::Coveralls Test::Pod::Spelling::CommonMistakes Test::Portability::Files Test::Pod::Coverage
+  - build-dist
 
 install:
   - cpanm -qin --skip-satisfied --installdeps --notest .

@@ -27,5 +27,6 @@ jobs:
       - name: Install Dependencies
         run: |
           cpanm -iqn --skip-satisfied File::Spec ExtUtils::MakeMaker LWP::Simple::WithCache LWP::Protocol::https
+          cpanm -iqn --skip-satisfied --installdeps --notest .
       - name: Run Tests
         run: prove -l -b t
