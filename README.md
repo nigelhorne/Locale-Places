@@ -21,15 +21,16 @@ but that can't be guaranteed.
 ## translate
 
 Translate a city into a different language.
-Takes a mandatory argument 'place'
-and an optional argument 'language'.
-If language isn't given,
+Takes two mandatory arguments 'place'
+and 'from'.
+Takes an optional argument 'to'.
+If $to isn't given,
 the code makes a best guess based on the environment.
 
     use Locale::Places;
 
     # Prints "Douvres"
-    print Locale::Places->new()->translate({ place => 'Dover', language => 'fr' });
+    print Locale::Places->new()->translate({ place => 'Dover', from => 'en', to => 'fr' });
 
 # AUTHOR
 
