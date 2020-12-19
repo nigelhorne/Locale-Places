@@ -21,6 +21,10 @@ but that can't be guaranteed.
 ## translate
 
 Translate a city into a different language.
+Takes a mandatory argument 'place'
+and an optional argument 'language'.
+If language isn't given,
+the code makes a best guess based on the environment.
 
     use Locale::Places;
 
