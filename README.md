@@ -24,7 +24,8 @@ Translate a city into a different language.
 
     use Locale::Places;
 
-    print Locale::Places->new()->translate({ place => 'Dover', language => 'fr' });      # Prints "Douvres"
+    # Prints "Douvres"
+    print Locale::Places->new()->translate({ place => 'Dover', language => 'fr' });
 
 # AUTHOR
 
