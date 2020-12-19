@@ -86,14 +86,14 @@ sub translate {
 		Carp::croak(__PACKAGE__, 'Usage: translate(place => $place)');
 	}
 
-	my $language = $params{'language'} // $self->_get_language();
+	my $language = $params{'language'} || $self->_get_language();
 	if(!defined($language)) {
 		Carp::carp(__PACKAGE__, ": can't work out which language to translate to");
 		return;
 	}
 
 	# TODO: Add a country argument and choose a database based on that
-	$self->{'gb'} //= Locale::Places::DB::GB->new(no_entry => 1);
+	$self->{'gb'} ||= Locale::Places::DB::GB->new(no_entry => 1);
 
 	if($place = $self->{'gb'}->fetchrow_hashref({ data => $place })) {
 		if($place = $self->{'gb'}->selectall_hashref({ code2 => $place->{'code2'} })) {
