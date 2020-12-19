@@ -9,8 +9,6 @@ use File::Spec;
 use Locale::Places::DB::GB;
 use Module::Info;
 
-our %gb_cache;
-
 =head1 NAME
 
 Locale::Places - Translate places using http://download.geonames.org/
@@ -89,6 +87,7 @@ sub translate {
 		return;
 	}
 
+	# TODO: Add a country argument and choose a database based on that
 	$self->{'gb'} //= Locale::Places::DB::GB->new(no_entry => 1);
 
 	if($place = $self->{'gb'}->fetchrow_hashref({ data => $place })) {
@@ -128,7 +127,7 @@ Nigel Horne, C<< <njh at bandsman.co.uk> >>
 
 =head1 BUGS
 
-is_tablet() only currently detects the iPad and Windows PCs. Android strings
+Only supports towns and cities in GB at the moment.
 
 =head1 SEE ALSO
 

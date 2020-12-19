@@ -22,6 +22,8 @@ but that can't be guaranteed.
 
 Translate a city into a different language.
 
+    use Locale::Places;
+
     print Locale::Places->new()->translate({ place => 'Dover', language => 'fr' });      # Prints "Douvres"
 
 # AUTHOR
@@ -30,7 +32,7 @@ Nigel Horne, `<njh at bandsman.co.uk>`
 
 # BUGS
 
-is\_tablet() only currently detects the iPad and Windows PCs. Android strings
+Only supports towns and cities in GB at the moment.
 
 # SEE ALSO
 
