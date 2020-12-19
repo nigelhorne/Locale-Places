@@ -9,7 +9,7 @@ my @needfull;
 # Install Pre-requisites
 BEGIN {
 	my @modules = (
-		'File::HomeDir', 'LWP::Protocol::https', 'LWP::Simple::WithCache'
+		'File::HomeDir', 'LWP::Simple::WithCache'
 	);
 
 	foreach my $module(@modules) {

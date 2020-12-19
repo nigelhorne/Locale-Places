@@ -57,15 +57,16 @@ sub new {
 =head2 translate
 
 Translate a city into a different language.
-Takes a mandatory argument 'place'
-and an optional argument 'language'.
-If language isn't given,
+Takes two mandatory arguments 'place'
+and 'from'.
+Takes an optional argument 'to'.
+If $to isn't given,
 the code makes a best guess based on the environment.
 
    use Locale::Places;
 
    # Prints "Douvres"
-   print Locale::Places->new()->translate({ place => 'Dover', language => 'fr' });
+   print Locale::Places->new()->translate({ place => 'Dover', from => 'en', to => 'fr' });
 
 =cut
 
@@ -83,11 +84,15 @@ sub translate {
 
 	my $place = $params{'place'};
 	if(!defined($place)) {
-		Carp::croak(__PACKAGE__, 'Usage: translate(place => $place)');
+		Carp::croak(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
+	}
+	my $from = $params{'from'};
+	if(!defined($from)) {
+		Carp::croak(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
 	}
 
-	my $language = $params{'language'} || $self->_get_language();
-	if(!defined($language)) {
+	my $to = $params{'to'} || $self->_get_language();
+	if(!defined($to)) {
 		Carp::carp(__PACKAGE__, ": can't work out which language to translate to");
 		return;
 	}
@@ -95,15 +100,9 @@ sub translate {
 	# TODO: Add a country argument and choose a database based on that
 	$self->{'gb'} ||= Locale::Places::DB::GB->new(no_entry => 1);
 
-	if($place = $self->{'gb'}->fetchrow_hashref({ data => $place })) {
-		if($place = $self->{'gb'}->selectall_hashref({ code2 => $place->{'code2'} })) {
-			foreach my $entry(@{$place}) {
-				next if(!defined($entry->{'type'}));
-
-				if($entry->{'type'} eq $language) {
-					return $entry->{'data'};
-				}
-			}
+	if($place = $self->{'gb'}->fetchrow_hashref({ type => $from, data => $place })) {
+		if(my $line = $self->{'gb'}->fetchrow_hashref({ type => $to, code2 => $place->{'code2'} })) {
+			return $line->{'data'};
 		}
 	}
 }
