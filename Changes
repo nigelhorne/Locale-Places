@@ -1,6 +1,6 @@
 Revision history for Locale::Places
 
-0.02
+0.02	Sat Dec 19 21:21:38 EST 2020
 	Allow source language to be set
 	Faster lookup
 

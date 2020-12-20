@@ -1,10 +1,12 @@
+[![Actions Status](https://github.com/nigelhorne/Locale-Places/workflows/.github/workflows/all.yml/badge.svg)](https://github.com/nigelhorne/Locale-Places/actions)
+
 # NAME
 
 Locale::Places - Translate places using http://download.geonames.org/
 
 # VERSION
 
-Version 0.01
+Version 0.02
 
 # METHODS
 
