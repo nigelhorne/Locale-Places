@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::Most tests => 7;
+use Test::Most tests => 8;
 
 BEGIN {
 	use_ok('Locale::Places');
@@ -13,6 +13,7 @@ TRANSLATE: {
 
 	like($places->translate(place => 'London', from => 'en', to => 'fr'), qr/Londres$/, 'French for London is Londres');
 	like($places->translate(place => 'Londres', from => 'fr', to => 'en'), qr/London$/, 'English for Londres is London');
+	is($places->translate({ place => 'London', from => 'en', to => 'en' }), 'London', 'Englishg for London is London');
 	is($places->translate({ place => 'foo', from => 'bar' }), undef, 'Translating gibberish returns undef');
 
 	delete $ENV{'LC_MESSAGES'};

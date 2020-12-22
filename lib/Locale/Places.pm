@@ -96,6 +96,7 @@ sub translate {
 		Carp::carp(__PACKAGE__, ": can't work out which language to translate to");
 		return;
 	}
+	return $place if($to eq $from);
 
 	# TODO: Add a country argument and choose a database based on that
 	$self->{'gb'} ||= Locale::Places::DB::GB->new(no_entry => 1);
