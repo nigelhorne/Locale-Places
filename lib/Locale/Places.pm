@@ -57,9 +57,10 @@ sub new {
 =head2 translate
 
 Translate a city into a different language.
-Takes two mandatory arguments 'place'
-and 'from'.
-Takes an optional argument 'to'.
+Takes one mandatory argument: 'place'.
+It also takes two other arguments:
+'from' and 'to',
+at least one of which must be given.
 If $to isn't given,
 the code makes a best guess based on the environment.
 
@@ -86,12 +87,19 @@ sub translate {
 	if(!defined($place)) {
 		Carp::croak(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
 	}
+
+	my $to = $params{'to'};
 	my $from = $params{'from'};
-	if(!defined($from)) {
+	if((!defined($from)) && !defined($to)) {
 		Carp::croak(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
 	}
 
-	my $to = $params{'to'} || $self->_get_language();
+	$from ||= $self->_get_language();
+	if(!defined($from)) {
+		Carp::carp(__PACKAGE__, ": can't work out which language to translate from");
+		return;
+	}
+	$to ||= $self->_get_language();
 	if(!defined($to)) {
 		Carp::carp(__PACKAGE__, ": can't work out which language to translate to");
 		return;

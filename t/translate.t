@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::Most tests => 8;
+use Test::Most tests => 13;
 
 BEGIN {
 	use_ok('Locale::Places');
@@ -26,6 +26,14 @@ TRANSLATE: {
 	delete $ENV{'LANGUAGE'};
 
 	$ENV{'LANG'} = 'fr_FR';
-	is($places->translate(place => 'Dover', 'from' => 'en'), 'Douvres', 'LANG set to French');
+	is($places->translate(place => 'Dover', 'from' => 'en'), 'Douvres', 'Target LANG set to French');
 
+	is($places->translate(place => 'Douvres', 'to' => 'en'), 'Dover', 'Source LANG set to French');
+	is($places->translate(place => 'Douvres', 'to' => 'fr'), 'Douvres', 'Source LANG set to French');
+
+	$ENV{'LANG'} = 'en_GB';
+
+	is($places->translate(place => 'Dover', 'to' => 'en'), 'Dover', 'Source LANG set to English');
+	is($places->translate(place => 'Douvres', 'from' => 'fr'), 'Dover', 'Source LANG set to English');
+	is($places->translate(place => 'Dover', 'from' => 'en'), 'Dover', 'Source LANG set to English');
 }
