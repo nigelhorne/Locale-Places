@@ -25,7 +25,7 @@ Takes one mandatory argument: 'place'.
 It also takes two other arguments:
 'from' and 'to',
 at least one of which must be given.
-If $to isn't given,
+If neither $to nor $from is given,
 the code makes a best guess based on the environment.
 
     use Locale::Places;
