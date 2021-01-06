@@ -182,7 +182,7 @@ L<http://deps.cpantesters.org/?module=Locale::Places>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright 2020 Nigel Horne.
+Copyright 2020-2021 Nigel Horne.
 
 This program is released under the following licence: GPL2
 
