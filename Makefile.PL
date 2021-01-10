@@ -3,6 +3,19 @@
 use strict;
 use warnings;
 use ExtUtils::MakeMaker 6.64;	# 6.64 for TEST_REQUIRES
+use IO::Socket::INET;
+
+my $site = 'download.geonames.org';
+
+if($ENV{'NO_NETWORK_TESTING'}) {
+	print STDERR "NA: NO_NETWORK_TESTING is defined\n";
+	exit(0);
+}
+
+if(!IO::Socket::INET->new(PeerAddr => "$site:80", Timeout => 5)) {
+	print STDERR "NA: Can't connect to $site\n";
+	exit(0);
+}
 
 my @dirs = (
 	'lib/Locale/Places/databases',
@@ -16,7 +29,7 @@ foreach my $dir(@dirs) {
 }
 
 my %urls = (
-	'http://download.geonames.org/export/dump/alternatenames/GB.zip' => 'lib/Locale/Places/databases/GB.zip',
+	"http://$site/export/dump/alternatenames/GB.zip" => 'lib/Locale/Places/databases/GB.zip',
 );
 
 # unlink('lib/Geo/Coder/Free/MaxMind/databases/cities.sql');
