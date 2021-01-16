@@ -1,5 +1,8 @@
 Revision history for Locale::Places
 
+0.04
+	Fix http://www.cpantesters.org/cpan/report/f59da8fa-5743-11eb-9b90-718ee0dd574a
+
 0.03	Wed  6 Jan 20:02:37 EST 2021
 	If LWP::Simple::WithCache isn't installed, fall back to LWP::Simple
 	If $to eq $from don't look anything up
