@@ -10,7 +10,6 @@ image:
 
 environment:
   PERL5LIB: /home/appveyor/perl5/lib/perl5
-  AUTOMATED_TESTING: 1
   DEBIAN_FRONTEND: noninteractive
   PERL_MM_USE_DEFAULT: 1
 
