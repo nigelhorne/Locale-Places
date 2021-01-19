@@ -31,6 +31,7 @@ jobs:
         run: |
           cpanm -iqn --skip-satisfied ExtUtils::PL2Bat File::Spec ExtUtils::MakeMaker LWP::Simple::WithCache
           cpanm -iqn --skip-satisfied Test::Pod::Spelling::CommonMistakes Test::Portability::Files Test::Carp Test::Pod::Coverage
+          mkdir -p lib/Locale/Places/databases
           cpanm -ivn --skip-satisfied --installdeps --notest .
         env:
           AUTHOR_TESTING: 1
