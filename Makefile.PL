@@ -7,6 +7,11 @@ use IO::Socket::INET;
 
 my $site = 'download.geonames.org';
 
+if($ENV{'AUTOMATED_TESTING'}) {
+	print STDERR "NA: AUTOMATED_TESTING is defined, this module is not suitrable for smoke testing\n";
+	exit(0);
+}
+
 if($ENV{'NO_NETWORK_TESTING'}) {
 	print STDERR "NA: NO_NETWORK_TESTING is defined\n";
 	exit(0);
@@ -80,14 +85,11 @@ foreach my $url(keys %urls) {
 	}
 
 	print "Downloading $url to $file\n";
-	if($use_withcache) {
-		if(LWP::Simple::WithCache::is_error(my $rc = LWP::Simple::WithCache::mirror($url, $file))) {
-			die "$url: LWP error $rc";
-		}
-	} else {
-		if(LWP::Simple::is_error(my $rc = LWP::Simple::mirror($url, $file))) {
-			die "$url: LWP error $rc";
-		}
+	if($use_withcache &&
+	   LWP::Simple::WithCache::is_error(my $rc = LWP::Simple::WithCache::mirror($url, $file))) {
+		die "$url: LWP error $rc";
+	} elsif(LWP::Simple::is_error($rc = LWP::Simple::mirror($url, $file))) {
+		die "$url: LWP error $rc";
 	}
 	die $file if(!-r $file);
 }
