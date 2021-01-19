@@ -88,9 +88,9 @@ foreach my $url(keys %urls) {
 
 	print "Downloading $url to $file\n";
 	if($use_withcache &&
-	   LWP::Simple::WithCache::is_error(my $rc = LWP::Simple::WithCache::mirror($url, $file))) {
+	   LWP::Simple::WithCache::is_error(my $rc = LWP::Simple::WithCache::getstore($url, $file))) {
 		die "$url: LWP error $rc";
-	} elsif(LWP::Simple::is_error($rc = LWP::Simple::mirror($url, $file))) {
+	} elsif(LWP::Simple::is_error($rc = LWP::Simple::getstore($url, $file))) {
 		die "$url: LWP error $rc";
 	}
 	die $file if(!-r $file);
