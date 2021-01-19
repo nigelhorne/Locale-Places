@@ -12,6 +12,7 @@ environment:
   PERL5LIB: /home/appveyor/perl5/lib/perl5
   DEBIAN_FRONTEND: noninteractive
   PERL_MM_USE_DEFAULT: 1
+  AUTHOR_TESTING: 1
 
 platform: x64
 
