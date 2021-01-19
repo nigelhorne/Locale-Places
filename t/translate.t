@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::Most tests => 14;
+use Test::Most tests => 15;
 
 BEGIN {
 	use_ok('Locale::Places');
@@ -30,6 +30,7 @@ TRANSLATE: {
 
 	is($places->translate(place => 'Douvres', 'to' => 'en'), 'Dover', 'Source LANG set to French');
 	is($places->translate(place => 'Douvres', 'to' => 'fr'), 'Douvres', 'Source LANG set to French');
+	is($places->translate('Dover'), 'Douvres', 'Sets default source as English and a default target from the environment');
 
 	$ENV{'LANG'} = 'en_GB';
 

@@ -69,6 +69,9 @@ the code makes a best guess based on the environment.
    # Prints "Douvres"
    print Locale::Places->new()->translate({ place => 'Dover', from => 'en', to => 'fr' });
 
+   # Prints "Douvres" if we're working on a French system
+   print Locale::Places->new()->translate('Dover');
+
 =cut
 
 sub translate {
@@ -81,6 +84,7 @@ sub translate {
 		%params = @_;
 	} else {
 		$params{'place'} = shift;
+		$params{'from'} = 'en';
 	}
 
 	my $place = $params{'place'};
@@ -91,7 +95,10 @@ sub translate {
 	my $to = $params{'to'};
 	my $from = $params{'from'};
 	if((!defined($from)) && !defined($to)) {
-		Carp::croak(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
+		$to ||= $self->_get_language();
+		if((!defined($from)) && !defined($to)) {
+			Carp::croak(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
+		}
 	}
 
 	$from ||= $self->_get_language();
