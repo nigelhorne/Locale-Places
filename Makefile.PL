@@ -52,7 +52,7 @@ if(eval { require HTTP::Cache::Transparent; }) {
 	}
 
 	if(!-d $cachedir) {
-		print "Creating the download directory $cachedir\n";
+		print "Creating the cache directory $cachedir\n";
 		mkdir $cachedir || die "$cachedir: $@";
 	}
 	HTTP::Cache::Transparent::init({
@@ -62,7 +62,7 @@ if(eval { require HTTP::Cache::Transparent; }) {
 		NoUpdate => 60 * 60 * 24,
 		MaxAge => 30 * 24
 	}) || die "$0: $cachedir: $!";
-} else {
+} elsif(!$ENV{'AUTOMATED_TESTING'}) {
 	print "Consider installing HTTP::Cache::Transparent to reduce downloads\n";
 }
 
@@ -74,7 +74,9 @@ if(eval { require LWP::Simple::WithCache; }) {
 	require LWP::Simple;
 	LWP::Simple->import();
 
-	print "Consider installing LWP::Simple::WithCache to reduce downloads\n";
+	if(!$ENV{'AUTOMATED_TESTING'}) {
+		print "Consider installing LWP::Simple::WithCache to reduce downloads\n";
+	}
 }
 
 foreach my $url(keys %urls) {
