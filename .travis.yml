@@ -41,7 +41,7 @@ before_install:
   - cpanm -iqn --skip-satisfied Devel::Cover::Report::Coveralls Test::Pod::Spelling::CommonMistakes Test::Portability::Files Test::Pod::Coverage
 
 install:
-  - cpanm -qin --skip-satisfied --installdeps --notest .
+  - cpanm -vin --skip-satisfied --installdeps --notest .
 
 script:
   perl Makefile.PL && make && cover -test -report coveralls
