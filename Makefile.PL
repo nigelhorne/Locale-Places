@@ -8,7 +8,7 @@ use IO::Socket::INET;
 my $site = 'download.geonames.org';
 
 if($ENV{'AUTOMATED_TESTING'}) {
-	print STDERR "NA: AUTOMATED_TESTING is defined, this module is not suitrable for smoke testing\n";
+	print STDERR "NA: AUTOMATED_TESTING is defined, this module is not suitable for smoke testing\n";
 	exit(0);
 }
 
