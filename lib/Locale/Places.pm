@@ -139,6 +139,7 @@ sub _get_language {
 			return lc($1);
 		}
 	}
+	return;	# undef
 }
 
 =head1 AUTHOR
