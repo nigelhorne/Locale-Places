@@ -132,6 +132,7 @@ WriteMakefile(
 	  : ()),
 	BUILD_REQUIRES => {
 	}, TEST_REQUIRES =>  {
+		'Test::Carp' => 0,
 		'Test::Most' => 0,
 	}, PREREQ_PM => {
 		'CHI' => 0,
