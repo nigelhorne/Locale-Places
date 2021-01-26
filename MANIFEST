@@ -8,6 +8,8 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 README.md
 t/00-load.t
+t/10-new.t
+t/carp.t
 t/coverage.t
 t/critic.t
 t/eof.t
@@ -17,7 +19,9 @@ t/kwalitee.t
 t/lib/MyLogger.pm
 t/links.t
 t/manifest.t
+t/minimum.t
 t/no404s.t
+t/noopentickets.t
 t/pod-cm.t
 t/pod.t
 t/port.t

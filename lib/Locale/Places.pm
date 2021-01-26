@@ -40,7 +40,10 @@ sub new {
 	my $class = ref($proto) || $proto;
 
 	# Use Locale::Places->new, not Locale::Places::new
-	return unless($class);
+	if(!defined($class)) {
+		Carp::carp(__PACKAGE__, ' use ->new() not ::new() to instantiate');
+		return;
+	}
 
 	my $directory = $param{'directory'} || Module::Info->new_from_loaded(__PACKAGE__)->file();
 	$directory =~ s/\.pm$//;
@@ -89,15 +92,17 @@ sub translate {
 
 	my $place = $params{'place'};
 	if(!defined($place)) {
-		Carp::croak(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
+		Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
+		return;
 	}
 
 	my $to = $params{'to'};
 	my $from = $params{'from'};
 	if((!defined($from)) && !defined($to)) {
 		$to ||= $self->_get_language();
-		if((!defined($from)) && !defined($to)) {
-			Carp::croak(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
+		if(!defined($to)) {
+			Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
+			return;
 		}
 	}
 

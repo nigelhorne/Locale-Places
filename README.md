@@ -1,3 +1,5 @@
+[![Kritika Analysis Status](https://kritika.io/users/nigelhorne/repos/4663014674766170/heads/master/status.svg)](https://kritika.io/users/nigelhorne/repos/4663014674766170/heads/master/)
+
 # NAME
 
 Locale::Places - Translate places using http://download.geonames.org/
@@ -32,6 +34,9 @@ the code makes a best guess based on the environment.
 
     # Prints "Douvres"
     print Locale::Places->new()->translate({ place => 'Dover', from => 'en', to => 'fr' });
+
+    # Prints "Douvres" if we're working on a French system
+    print Locale::Places->new()->translate('Dover');
 
 # AUTHOR
 
