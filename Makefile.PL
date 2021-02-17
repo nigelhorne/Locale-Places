@@ -130,10 +130,22 @@ my $pm = {
 	'lib/Locale/Places/DB.pm' => 'blib/lib/Locale/Places/DB.pm',
 	'lib/Locale/Places/DB/GB.pm' => 'blib/lib/Locale/Places/DB/GB.pm',
 };
-if($ENV{'AUTOMATED_TESTING'}) {
-	$pm->{'lib/Locale/Places/databases/GB.csv'} = 'blib/lib/Locale/Places/databases/GB.csv';
-} else {
+
+my $make_sql;
+
+if(!$ENV{'AUTOMATED_TESTING'}) {
+	if(eval { require File::Which; }) {
+		File::Which->import();
+		if(which('csv2sqlite')) {
+			$make_sql = 1;
+		}
+	}
+}
+
+if($make_sql) {
 	$pm->{'lib/Locale/Places/databases/GB.sql'} = 'blib/lib/Locale/Places/databases/GB.sql';
+} else {
+	$pm->{'lib/Locale/Places/databases/GB.csv'} = 'blib/lib/Locale/Places/databases/GB.csv';
 }
 
 WriteMakefile(
@@ -150,6 +162,7 @@ WriteMakefile(
 		'File::Copy' => 0,
 		'File::Open::NoCache::ReadOnly' => 0,
 	}, CONFIGURE_REQUIRES => {
+		'File::Which' => 0,
 		'LWP::Simple' => 0,
 		'IO::AIO' => 0,
 		'Try::Tiny' => 0,
