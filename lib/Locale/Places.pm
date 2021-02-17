@@ -32,6 +32,7 @@ which tells the object where to find the file GB.sql
 If that parameter isn't given,
 the module will attempt to find the databases,
 but that can't be guaranteed.
+Any other options are passed to the underlying database driver.
 
 =cut
 
@@ -184,9 +185,9 @@ You can also look for information at:
 
 L<https://metacpan.org/release/Locale-Places>
 
-=item * RT: CPAN's request tracker
+=item * GitHub
 
-L<https://rt.cpan.org/NoAuth/Bugs.html?Dist=Locale-Places>
+L<https://github.com/nigelhorne/Locale-Places>
 
 =item * CPANTS
 

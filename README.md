@@ -15,10 +15,11 @@ Version 0.03
 Create a Locale::Places object.
 
 Takes one optional parameter, directory,
-which tells the object where to find the file GB.csv.
+which tells the object where to find the file GB.sql
 If that parameter isn't given,
 the module will attempt to find the databases,
 but that can't be guaranteed.
+Any other options are passed to the underlying database driver.
 
 ## translate
 
@@ -60,9 +61,9 @@ You can also look for information at:
 
     [https://metacpan.org/release/Locale-Places](https://metacpan.org/release/Locale-Places)
 
-- RT: CPAN's request tracker
+- GitHub
 
-    [https://rt.cpan.org/NoAuth/Bugs.html?Dist=Locale-Places](https://rt.cpan.org/NoAuth/Bugs.html?Dist=Locale-Places)
+    [https://github.com/nigelhorne/Locale-Places](https://github.com/nigelhorne/Locale-Places)
 
 - CPANTS
 
