@@ -15,17 +15,17 @@ use warnings;
 #	from		  : from period when the name was used
 #	to		  : to period when the name was used
 
-# gb.csv is from http://download.geonames.org/export/dump/alternatenames/GB.zip
+# GB.csv is from http://download.geonames.org/export/dump/alternatenames/GB.zip
 
 use Locale::Places::DB;
 
 our @ISA = ('Locale::Places::DB');
 
-# This code is needed only when using gb.csv instead of gb.sql
-# sub _open {
-	# my $self = shift;
-# 
-	# return $self->SUPER::_open(sep_char => "\t", column_names => ['code1','code2','type','data','is_preferred_name']);
-# }
+# If there's no SQLite file, fall back to the original CSV file, that's when the arguments to _open will be used
+sub _open {
+	my $self = shift;
+
+	return $self->SUPER::_open(sep_char => "\t", column_names => ['code1','code2','type','data','is_preferred_name']);
+}
 
 1;

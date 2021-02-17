@@ -44,7 +44,7 @@ my $fin = $csv->fd();
 aio_readahead($fin, 0, AIO_READAHEAD_SIZE);
 
 if(my $dbh = DBI->connect("dbi:SQLite:dbname=$sqlite", undef, undef, { RaiseError => 1, AutoCommit => 0, synchronous => 0, locking_mode => 'EXCLUSIVE' })) {
-	$dbh->do('CREATE TABLE gb(code1 INTEGER, code2 INTEGER, type VARCHAR, data VARCHAR NOT NULL, ispreferredname BIT)');
+	$dbh->do('CREATE TABLE gb(code1 INTEGER, code2 INTEGER, type VARCHAR(4), data VARCHAR NOT NULL, ispreferredname BIT)');
 	# keys
 	# if($place = $self->{'gb'}->fetchrow_hashref({ type => $from, data => $place })) {
 		# if(my $line = $self->{'gb'}->fetchrow_hashref({ type => $to, code2 => $place->{'code2'} })) {
