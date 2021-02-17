@@ -18,7 +18,8 @@ GB: {
 
 	my $dover = $places->fetchrow_hashref({ data => 'Dover', type => 'en' });
 	if($ENV{'TEST_VERBOSE'}) {
-		use Data::Dumper;
+		require Data::Dumper;
+		Data::Dumper->import();
 		diag(Data::Dumper->new([$dover])->Dump());
 	}
 	$dover = $places->selectall_hashref({ code2 => $dover->{'code2'} });

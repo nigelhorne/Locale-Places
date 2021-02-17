@@ -37,7 +37,6 @@ if($Config{'osname'} ne 'MSWin32') {
 my $dir = 'lib/Locale/Places/databases';
 my $csv = File::Spec->catdir($dir, 'GB.csv');
 my $sqlite = File::Spec->catdir($dir, 'GB.sql');
-my %normalised;
 
 if(-r $sqlite) {
 	if((-s $sqlite) > 0) {
