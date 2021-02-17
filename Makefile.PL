@@ -130,7 +130,9 @@ my $pm = {
 	'lib/Locale/Places/DB.pm' => 'blib/lib/Locale/Places/DB.pm',
 	'lib/Locale/Places/DB/GB.pm' => 'blib/lib/Locale/Places/DB/GB.pm',
 };
-unless($ENV{'AUTOMATED_TESTING'}) {
+if($ENV{'AUTOMATED_TESTING'}) {
+	$pm->{'lib/Locale/Places/databases/GB.csv'} = 'blib/lib/Locale/Places/databases/GB.csv';
+} else {
 	$pm->{'lib/Locale/Places/databases/GB.sql'} = 'blib/lib/Locale/Places/databases/GB.sql';
 }
 
