@@ -134,7 +134,7 @@ WriteMakefile(
 	 ($ExtUtils::MakeMaker::VERSION >= 6.3002))
 	  ? ('LICENSE'=> 'GPL')
 	  : ()),
-	BUILD_REQUIRES => {
+	BUILD_REQUIRES => {	# For bin/create_sqlite
 		'File::Open::NoCache::ReadOnly' => 0,
 	}, CONFIGURE_REQUIRES => {
 		'LWP::Simple' => 0,
