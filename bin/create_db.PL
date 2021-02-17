@@ -4,11 +4,12 @@
 
 use strict;
 use warnings;
+use Config;
 use DBI;
 use File::Copy;
 use File::Spec;
-use File::Open::NoCache::ReadOnly;
-use IO::AIO;
+# use File::Open::NoCache::ReadOnly;
+# use IO::AIO;
 use Try::Tiny;
 use autodie qw(:all);
 
@@ -27,6 +28,14 @@ BEGIN {
 
 exit if($ENV{'AUTOMATED_TESTING'});
 
+if($Config{'osname'} ne 'MSWin32') {
+	require IO::AIO;
+	IO::AIO->import();
+
+	require File::Open::NoCache::ReadOnly;
+	File::Open::NoCache::ReadOnly->import();
+}
+
 my $dir = 'lib/Locale/Places/databases';
 my $csv = File::Spec->catdir($dir, 'GB.csv');
 my $sqlite = File::Spec->catdir($dir, 'GB.sql');
@@ -40,9 +49,14 @@ if(-r $sqlite) {
 	unlink $sqlite;
 }
 
-$csv = File::Open::NoCache::ReadOnly->new($csv);
-my $fin = $csv->fd();
-aio_readahead($fin, 0, AIO_READAHEAD_SIZE);
+my $fin;
+if($Config{'osname'} eq 'MSWin32') {
+	open($fin, '<', $csv);
+} else {
+	$csv = File::Open::NoCache::ReadOnly->new($csv);
+	$fin = $csv->fd();
+	aio_readahead($fin, 0, AIO_READAHEAD_SIZE);
+}
 
 if(my $dbh = DBI->connect("dbi:SQLite:dbname=$sqlite", undef, undef, { RaiseError => 1, AutoCommit => 0, synchronous => 0, locking_mode => 'EXCLUSIVE' })) {
 	$dbh->do('CREATE TABLE gb(code1 INTEGER, code2 INTEGER, type VARCHAR(4), data VARCHAR NOT NULL, ispreferredname BIT)');

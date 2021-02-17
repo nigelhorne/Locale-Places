@@ -135,6 +135,7 @@ WriteMakefile(
 	  ? ('LICENSE'=> 'GPL')
 	  : ()),
 	BUILD_REQUIRES => {	# For bin/create_sqlite
+		'DBI' => 0,
 		'File::Copy' => 0,
 		'File::Open::NoCache::ReadOnly' => 0,
 	}, CONFIGURE_REQUIRES => {
@@ -175,6 +176,12 @@ WriteMakefile(
 			}
 		},
 	}, PL_FILES => (defined($ENV{'AUTOMATED_TESTING'}) ? {} : {'bin/create_db.PL' => 'bin/create_db'}),
+	, PM => {
+		'lib/Locale/Places.pm' => 'blib/lib/Locale/Places.pm',
+		'lib/Locale/Places/DB.pm' => 'blib/lib/Locale/Places/DB.pm',
+		'lib/Locale/Places/DB/GB.pm' => 'blib/lib/Locale/Places/DB/GB.pm',
+		'lib/Locale/Places/databases/GB.sql' => 'blib/lib/Locale/Places/databases/GB.sql'
+	},
 	# PPM_INSTALL_EXEC	=> 'bash',
 	# PPM_INSTALL_SCRIPT	=> 'bin/create_sqlite',
 	MIN_PERL_VERSION	=> '5.6.2'	# Probably would work, but never tested on earlier versions than this
