@@ -135,7 +135,9 @@ WriteMakefile(
 	  ? ('LICENSE'=> 'GPL')
 	  : ()),
 	BUILD_REQUIRES => {
-	}, TEST_REQUIRES =>  {
+	}, CONFIGURE_REQUIRES => {
+		'LWP::Simple' => 0,
+	}, TEST_REQUIRES => {
 		'Test::Carp' => 0,
 		'Test::Most' => 0,
 	}, PREREQ_PM => {
