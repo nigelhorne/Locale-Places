@@ -125,6 +125,16 @@ if(!(-r 'lib/Locale/Places/databases/GB.csv')) {
 	}
 }
 
+my $pm = {
+	'lib/Locale/Places.pm' => 'blib/lib/Locale/Places.pm',
+	'lib/Locale/Places/DB.pm' => 'blib/lib/Locale/Places/DB.pm',
+	'lib/Locale/Places/DB/GB.pm' => 'blib/lib/Locale/Places/DB/GB.pm',
+	'lib/Locale/Places/databases/GB.sql' => 'blib/lib/Locale/Places/databases/GB.sql'
+};
+unless($ENV{'AUTOMATED_TESTING'}) {
+	$pm->{'lib/Locale/Places/databases/GB.sql'} = 'blib/lib/Locale/Places/databases/GB.sql';
+}
+
 WriteMakefile(
 	NAME		=> 'Locale::Places',
 	AUTHOR		=> q{Nigel Horne <njh@bandsman.co.uk>},
