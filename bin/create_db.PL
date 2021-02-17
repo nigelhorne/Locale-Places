@@ -8,8 +8,6 @@ use Config;
 use DBI;
 use File::Copy;
 use File::Spec;
-# use File::Open::NoCache::ReadOnly;
-# use IO::AIO;
 use Try::Tiny;
 use autodie qw(:all);
 

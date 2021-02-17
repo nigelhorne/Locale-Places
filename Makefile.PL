@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+use Config;
 use ExtUtils::MakeMaker 6.64;	# 6.64 for TEST_REQUIRES
 use IO::Socket::INET;
 
@@ -148,6 +149,16 @@ if($make_sql) {
 	$pm->{'lib/Locale/Places/databases/GB.csv'} = 'blib/lib/Locale/Places/databases/GB.csv';
 }
 
+# For bin/create_sqlite
+my $build_requires = {
+	'DBI' => 0,
+	'File::Copy' => 0,
+};
+
+if($Config{'osname'} ne 'MSWin32') {
+	$build_requires->{'File::Open::NoCache::ReadOnly'} = 0;
+}
+
 WriteMakefile(
 	NAME		=> 'Locale::Places',
 	AUTHOR		=> q{Nigel Horne <njh@bandsman.co.uk>},
@@ -157,11 +168,9 @@ WriteMakefile(
 	 ($ExtUtils::MakeMaker::VERSION >= 6.3002))
 	  ? ('LICENSE'=> 'GPL')
 	  : ()),
-	BUILD_REQUIRES => {	# For bin/create_sqlite
-		'DBI' => 0,
-		'File::Copy' => 0,
-		'File::Open::NoCache::ReadOnly' => 0,
-	}, CONFIGURE_REQUIRES => {
+	BUILD_REQUIRES => $build_requires,
+	CONFIGURE_REQUIRES => {
+		'Config' => 0,
 		'File::Which' => 0,
 		'LWP::Simple' => 0,
 		'IO::AIO' => 0,
