@@ -135,8 +135,11 @@ WriteMakefile(
 	  ? ('LICENSE'=> 'GPL')
 	  : ()),
 	BUILD_REQUIRES => {
+		'File::Open::NoCache::ReadOnly' => 0,
 	}, CONFIGURE_REQUIRES => {
 		'LWP::Simple' => 0,
+		'IO::AIO' => 0,
+		'Try::Tiny' => 0,
 	}, TEST_REQUIRES => {
 		'Test::Carp' => 0,
 		'Test::Most' => 0,
