@@ -28,7 +28,7 @@ our $VERSION = '0.03';
 Create a Locale::Places object.
 
 Takes one optional parameter, directory,
-which tells the object where to find the file GB.csv.
+which tells the object where to find the file GB.sql
 If that parameter isn't given,
 the module will attempt to find the databases,
 but that can't be guaranteed.
@@ -45,13 +45,14 @@ sub new {
 		return;
 	}
 
-	my $directory = $param{'directory'} || Module::Info->new_from_loaded(__PACKAGE__)->file();
+	my $directory = delete $param{'directory'} || Module::Info->new_from_loaded(__PACKAGE__)->file();
 	$directory =~ s/\.pm$//;
 
 	Locale::Places::DB::init({
 		directory => File::Spec->catfile($directory, 'databases'),
 		no_entry => 1,
-		cache => $param{cache} || CHI->new(driver => 'Memory', datastore => {})
+		cache => $param{cache} || CHI->new(driver => 'Memory', datastore => {}),
+		%param
 	});
 
 	return bless { }, $class;
@@ -121,11 +122,23 @@ sub translate {
 	# TODO: Add a country argument and choose a database based on that
 	$self->{'gb'} ||= Locale::Places::DB::GB->new(no_entry => 1);
 
-	if($place = $self->{'gb'}->fetchrow_hashref({ type => $from, data => $place })) {
-		if(my $line = $self->{'gb'}->fetchrow_hashref({ type => $to, code2 => $place->{'code2'} })) {
+	my @places = @{$self->{'gb'}->selectall_hashref({ type => $from, data => $place, ispreferredname => 1 })};
+	if(scalar(@places) == 0) {
+		@places = @{$self->{'gb'}->selectall_hashref({ type => $from, data => $place })};
+	}
+
+	if(scalar(@places) == 1) {
+		if(my $line = $self->{'gb'}->fetchrow_hashref({ type => $to, code2 => $places[0]->{'code2'} })) {
 			return $line->{'data'};
 		}
+	} elsif(scalar(@places) > 1) {
+		foreach my $p(@places) {
+			if(my $line = $self->{'gb'}->fetchrow_hashref({ type => $to, code2 => $p->{'code2'} })) {
+				return $line->{'data'};
+			}
+		}
 	}
+	return;	# undef
 }
 
 # https://www.gnu.org/software/gettext/manual/html_node/Locale-Environment-Variables.html
