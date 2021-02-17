@@ -5,6 +5,7 @@
 use strict;
 use warnings;
 use DBI;
+use File::Copy;
 use File::Spec;
 use File::Open::NoCache::ReadOnly;
 use IO::AIO;
@@ -58,6 +59,8 @@ if(my $dbh = DBI->connect("dbi:SQLite:dbname=$sqlite", undef, undef, { RaiseErro
 	flush($dbh, $queue);
 	$dbh->commit();
 	$dbh->disconnect();
+
+	File::Copy::copy($sqlite, File::Spec->catfile('blib', $sqlite));
 } else {
 	die "$sqlite: $!";
 }

@@ -135,6 +135,7 @@ WriteMakefile(
 	  ? ('LICENSE'=> 'GPL')
 	  : ()),
 	BUILD_REQUIRES => {	# For bin/create_sqlite
+		'File::Copy' => 0,
 		'File::Open::NoCache::ReadOnly' => 0,
 	}, CONFIGURE_REQUIRES => {
 		'LWP::Simple' => 0,
