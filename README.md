@@ -6,7 +6,7 @@ Locale::Places - Translate places using http://download.geonames.org/
 
 # VERSION
 
-Version 0.03
+Version 0.04
 
 # METHODS
 
