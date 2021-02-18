@@ -152,6 +152,7 @@ my $build_requires = {
 
 if($Config{'osname'} ne 'MSWin32') {
 	$build_requires->{'File::Open::NoCache::ReadOnly'} = 0;
+	$build_requires->{'IO::AIO'} = 0;
 }
 
 WriteMakefile(
@@ -168,7 +169,6 @@ WriteMakefile(
 		'Config' => 0,
 		'File::Which' => 0,
 		'LWP::Simple' => 0,
-		'IO::AIO' => 0,
 		'Try::Tiny' => 0,
 	}, TEST_REQUIRES => {
 		'Test::Carp' => 0,
