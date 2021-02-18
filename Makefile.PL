@@ -178,6 +178,7 @@ WriteMakefile(
 		'DBI' => 0,
 		'DBD::CSV' => 0,
 		'DBD::SQLite' => 0,
+		'DBD::SQLite::Constants' => 0,
 		'Error::Simple' => 0,
 		'File::pfopen' => 0,
 		'File::Spec' => 0,
