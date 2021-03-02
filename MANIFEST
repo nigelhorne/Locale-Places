@@ -29,6 +29,7 @@ t/pod.t
 t/port.t
 t/snippets.t
 t/spelling.t
+t/strict.t
 t/translate.t
 t/unused.t
 t/vars.t

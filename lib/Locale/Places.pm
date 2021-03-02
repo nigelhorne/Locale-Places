@@ -133,11 +133,12 @@ sub translate {
 			return $line->{'data'};
 		}
 	} elsif(scalar(@places) > 1) {
-		foreach my $p(@places) {
-			if(my $line = $self->{'gb'}->fetchrow_hashref({ type => $to, code2 => $p->{'code2'} })) {
-				return $line->{'data'};
-			}
-		}
+		Carp::croak(__PACKAGE__, "Database has more than one preferred entry for $place in language $to");
+		# foreach my $p(@places) {
+			# if(my $line = $self->{'gb'}->fetchrow_hashref({ type => $to, code2 => $p->{'code2'} })) {
+				# return $line->{'data'};
+			# }
+		# }
 	}
 	return;	# undef
 }
