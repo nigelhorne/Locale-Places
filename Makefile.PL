@@ -77,8 +77,8 @@ if(eval { require LWP::Simple::WithCache; }) {
 
 foreach my $url(keys %urls) {
 	my $file = $urls{$url};
-
 	my $use_mirror = 0;
+
 	if(-r $file) {
 		# Don't bother checking for a download if the file is less than a week old
 		next if(-M $file < 7);
