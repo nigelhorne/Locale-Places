@@ -1,6 +1,6 @@
 Revision history for Locale::Places
 
-0.05
+0.05	Mon Sep 13 09:10:52 EDT 2021
 	Looking for a translation from English to French of Durham, Bromley and Lambeth gave
 		error about more than one preferred entry
 
