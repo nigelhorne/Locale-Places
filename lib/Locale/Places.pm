@@ -179,6 +179,9 @@ sub _get_language {
 			return lc($1);
 		}
 	}
+	if(defined($ENV{'LANG'}) && (($ENV{'LANG'} =~ /^C\./) || ($ENV{'LANG'} eq 'C'))) {
+		return 'en';
+	}
 	return;	# undef
 }
 

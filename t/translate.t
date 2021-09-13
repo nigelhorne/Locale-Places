@@ -18,6 +18,8 @@ TRANSLATE: {
 		$places = new_ok('Locale::Places');
 	}
 
+	$ENV{'LANG'} = 'C.UTF-8';
+
 	like($places->translate(place => 'London', from => 'en', to => 'fr'), qr/Londres$/, 'French for London is Londres');
 	like($places->translate(place => 'Londres', from => 'fr', to => 'en'), qr/London$/, 'English for Londres is London');
 	is($places->translate({ place => 'London', from => 'en', to => 'en' }), 'London', 'English for London is London');
