@@ -147,6 +147,11 @@ sub translate {
 					return $data;
 				}
 			}
+		} elsif(scalar(@places) == 0) {
+			@places = $self->{'gb'}->code2({ type => $from, data => $place, isshortname => 0 });
+			if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
+				return $data;
+			}
 		}
 		Carp::croak(__PACKAGE__, ": database has more than one preferred entry for $place in language $to");
 		# foreach my $p(@places) {

@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::Most tests => 15;
+use Test::Most tests => 18;
 use lib 't/lib';
 use MyLogger;
 
@@ -39,10 +39,15 @@ TRANSLATE: {
 	is($places->translate(place => 'Douvres', 'to' => 'fr'), 'Douvres', 'Source LANG set to French');
 	is($places->translate('Dover'), 'Douvres', 'Sets default source as English and a default target from the environment');
 
+	is($places->translate(place => 'Durham', 'from' => 'en', 'to' => 'fr'), 'Durham', 'Durham has different matches');
+	is($places->translate(place => 'Bromley', 'from' => 'en', 'to' => 'fr'), 'Bromley', 'Bromley has different matches');
+	is($places->translate(place => 'Lewisham', 'from' => 'en', 'to' => 'fr'), 'Lewisham', 'Lewisham has different matches');
+
 	$ENV{'LANG'} = 'en_GB';
 
 	is($places->translate(place => 'Dover', 'to' => 'en'), 'Dover', 'Source LANG set to English');
 	is($places->translate(place => 'Dover', 'to' => 'fr'), 'Douvres', 'Source LANG set to English');
 	is($places->translate(place => 'Douvres', 'from' => 'fr'), 'Dover', 'Source LANG set to English');
 	is($places->translate(place => 'Dover', 'from' => 'en'), 'Dover', 'Source LANG set to English');
+
 }
