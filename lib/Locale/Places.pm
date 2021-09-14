@@ -15,11 +15,11 @@ Locale::Places - Translate places using http://download.geonames.org/
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =cut
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 =head1 METHODS
 
@@ -137,7 +137,7 @@ sub translate {
 			return $data;
 		}
 	} elsif(scalar(@places) > 1) {
-		@places = $self->{'gb'}->code2({ type => $from, data => $place, ispreferredname => 1, isshortname => 0 });
+		@places = $self->{'gb'}->code2({ type => $from, data => $place, ispreferredname => 1, isshortname => undef });
 		if(scalar(@places) == 1) {
 			if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
 				return $data;
@@ -151,9 +151,11 @@ sub translate {
 				return $place;
 			}
 		} elsif(scalar(@places) == 0) {
-			@places = $self->{'gb'}->code2({ type => $from, data => $place, isshortname => 0 });
-			if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
-				return $data;
+			@places = $self->{'gb'}->code2({ type => $from, data => $place, isshortname => undef });
+			if(scalar(@places) == 1) {
+				if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
+					return $data;
+				}
 			}
 		}
 		Carp::croak(__PACKAGE__, ": database has more than one preferred entry for $place in language $to");
