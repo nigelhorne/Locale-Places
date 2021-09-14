@@ -68,6 +68,7 @@ It also takes two other arguments:
 at least one of which must be given.
 If neither $to nor $from is given,
 the code makes a best guess based on the environment.
+If no translation can be found, returns place in the original language.
 
    use Locale::Places;
 
@@ -146,6 +147,8 @@ sub translate {
 				if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
 					return $data;
 				}
+				# Can't find anything
+				return $place;
 			}
 		} elsif(scalar(@places) == 0) {
 			@places = $self->{'gb'}->code2({ type => $from, data => $place, isshortname => 0 });
