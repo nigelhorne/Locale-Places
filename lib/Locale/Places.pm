@@ -11,7 +11,7 @@ use Module::Info;
 
 =head1 NAME
 
-Locale::Places - Translate places using http://download.geonames.org/
+Locale::Places - Translate places between different languages using http://download.geonames.org/
 
 =head1 VERSION
 
@@ -20,6 +20,11 @@ Version 0.06
 =cut
 
 our $VERSION = '0.06';
+
+=head1 SYNOPSIS
+
+Translates towns and cities between different languages, for example
+London is Londres in French.
 
 =head1 METHODS
 
@@ -40,10 +45,11 @@ sub new {
 	my($proto, %param) = @_;
 	my $class = ref($proto) || $proto;
 
-	# Use Locale::Places->new, not Locale::Places::new
 	if(!defined($class)) {
-		Carp::carp(__PACKAGE__, ' use ->new() not ::new() to instantiate');
-		return;
+		# Using Locale::Places->new, not Locale::Places::new
+		# carp(__PACKAGE__, ' use ->new() not ::new() to instantiate');
+		# return;
+		$class = __PACKAGE__;
 	}
 
 	my $directory = delete $param{'directory'} || Module::Info->new_from_loaded(__PACKAGE__)->file();
@@ -238,7 +244,7 @@ L<http://deps.cpantesters.org/?module=Locale::Places>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright 2020-2021 Nigel Horne.
+Copyright 2020-2022 Nigel Horne.
 
 This program is released under the following licence: GPL2
 
