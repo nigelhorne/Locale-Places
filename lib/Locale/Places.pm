@@ -15,11 +15,11 @@ Locale::Places - Translate places between different languages using http://downl
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =cut
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 =head1 SYNOPSIS
 
@@ -146,7 +146,9 @@ sub translate {
 		# Handle the case when there are more than one preferred value
 		# but either not all translate or they all translate to the same
 		# value, in which case the duplicate can be ignored
-		# If none of them match then assume there are no translations available and return that
+
+		# If none of them matches then assume there are no translations
+		# available and return that
 
 		my $candidate;
 		my $found_something;
