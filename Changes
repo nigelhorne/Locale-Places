@@ -4,6 +4,7 @@ Revision history for Locale::Places
 	Handle the case when there are more than one preferred value but
 		either not all translate or they all translate to the same
 		value, in which case the duplicate can be ignored
+	If none of them match then assume there are no translations available and return that
 
 0.06	Tue Sep 14 13:51:57 EDT 2021
 	If, after everything, nothing can be found, return the orginal place

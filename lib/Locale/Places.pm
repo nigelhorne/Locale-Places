@@ -146,21 +146,24 @@ sub translate {
 		# Handle the case when there are more than one preferred value
 		# but either not all translate or they all translate to the same
 		# value, in which case the duplicate can be ignored
+		# If none of them match then assume there are no translations available and return that
 
 		my $candidate;
+		my $found_something;
 		foreach my $place(@places) {
 			if(my $data = $self->{'gb'}->data({ type => $to, code2 => $place })) {
+				$found_something = 1;
 				if(defined($candidate)) {
-					if($data eq $candidate) {
-						next;
+					if($data ne $candidate) {
+						$candidate = undef;
 					}
-					$candidate = undef;
-					last;
+				} else {
+					$candidate = $data;
 				}
-				$candidate = $data;
 			}
 		}
 		return $candidate if(defined($candidate));
+		return $place if(!defined($found_something));
 
 		@places = $self->{'gb'}->code2({ type => $from, data => $place, ispreferredname => 1, isshortname => undef });
 		if(scalar(@places) == 1) {
@@ -189,7 +192,7 @@ sub translate {
 				}
 			}
 		}
-		Carp::croak(__PACKAGE__, ': database has ', scalar(@places), " entries for $place in language $to");
+		Carp::croak(__PACKAGE__, ': database has ', scalar(@places), " entries for $place in language $to: ", join(', ', @places));
 		# foreach my $p(@places) {
 			# if(my $line = $self->{'gb'}->fetchrow_hashref({ type => $to, code2 => $p->{'code2'} })) {
 				# return $line->{'data'};
