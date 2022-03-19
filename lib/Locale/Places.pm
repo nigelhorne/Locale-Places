@@ -143,6 +143,25 @@ sub translate {
 			return $data;
 		}
 	} elsif(scalar(@places) > 1) {
+		# Handle the case when there are more than one preferred value
+		# but either not all translate or they all translate to the same
+		# value, in which case the duplicate can be ignored
+
+		my $candidate;
+		foreach my $place(@places) {
+			if(my $data = $self->{'gb'}->data({ type => $to, code2 => $place })) {
+				if(defined($candidate)) {
+					if($data eq $candidate) {
+						next;
+					}
+					$candidate = undef;
+					last;
+				}
+				$candidate = $data;
+			}
+		}
+		return $candidate if(defined($candidate));
+
 		@places = $self->{'gb'}->code2({ type => $from, data => $place, ispreferredname => 1, isshortname => undef });
 		if(scalar(@places) == 1) {
 			if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
@@ -163,8 +182,14 @@ sub translate {
 					return $data;
 				}
 			}
+			@places = $self->{'gb'}->code2({ type => $from, data => $place });
+			if(scalar(@places) == 1) {
+				if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
+					return $data;
+				}
+			}
 		}
-		Carp::croak(__PACKAGE__, ": database has more than one preferred entry for $place in language $to");
+		Carp::croak(__PACKAGE__, ': database has ', scalar(@places), " entries for $place in language $to");
 		# foreach my $p(@places) {
 			# if(my $line = $self->{'gb'}->fetchrow_hashref({ type => $to, code2 => $p->{'code2'} })) {
 				# return $line->{'data'};
@@ -239,6 +264,10 @@ L<http://cpanratings.perl.org/d/Locale-Places>
 =item * CPAN Testers Dependencies
 
 L<http://deps.cpantesters.org/?module=Locale::Places>
+
+=item * Geonames Discussion Group
+
+L<https://groups.google.com/g/geonames>
 
 =back
 
