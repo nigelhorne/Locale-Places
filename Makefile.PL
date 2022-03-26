@@ -5,6 +5,7 @@ use warnings;
 use Config;
 use ExtUtils::MakeMaker 6.64;	# 6.64 for TEST_REQUIRES
 use IO::Socket::INET;
+use Config::Perl::V;
 
 my $site = 'download.geonames.org';
 
@@ -88,6 +89,7 @@ foreach my $url(keys %urls) {
 			# Only download if a newer version is available
 			$use_mirror = 1;
 		}
+		unlink $file;	# Don't leave anything stale around
 	}
 
 	if($use_mirror) {
@@ -112,14 +114,31 @@ foreach my $url(keys %urls) {
 
 if(!(-r 'lib/Locale/Places/databases/GB.csv')) {
 	my $zip = 'lib/Locale/Places/databases/GB.zip';
-	system("unzip $zip");
-	rename 'GB.txt', 'lib/Locale/Places/databases/GB.csv';
-	unlink 'readme.txt';
-	# Save disc space, but prevent more than one download
-	if(open(my $fout, '>', $zip)) {
-		close($fout);
+
+	eval 'require IO::Uncompress::Unzip';
+	if($@) {
+		system("unzip $zip");
+		rename 'GB.txt', 'lib/Locale/Places/databases/GB.csv' or die "rename: $!";
+		unlink 'readme.txt';
+		# Save disc space, but prevent more than one download
+		if(open(my $fout, '>', $zip)) {
+			close($fout);
+		}
+	} elsif(open(my $fout, '>', 'lib/Locale/Places/databases/GB.csv')) {
+		IO::Uncompress::Unzip->import();
+		my $fin = IO::Uncompress::Unzip->new($zip);
+		do {
+			if($fin->getHeaderInfo->{'Name'} eq 'GB.txt') {
+				while(my $line = $fin->getline()) {
+					print $fout $line;
+				}
+				# last; # Gives syntax error that it's not in a loop :-(
+			}
+		} while($fin->nextStream());
 	}
 }
+
+die if(!(-r 'lib/Locale/Places/databases/GB.csv'));
 
 # my $pm = {
 	# 'lib/Locale/Places.pm' => 'blib/lib/Locale/Places.pm',
