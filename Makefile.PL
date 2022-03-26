@@ -5,7 +5,6 @@ use warnings;
 use Config;
 use ExtUtils::MakeMaker 6.64;	# 6.64 for TEST_REQUIRES
 use IO::Socket::INET;
-use Config::Perl::V;
 
 my $site = 'download.geonames.org';
 
@@ -115,6 +114,8 @@ foreach my $url(keys %urls) {
 if(!(-r 'lib/Locale/Places/databases/GB.csv')) {
 	my $zip = 'lib/Locale/Places/databases/GB.zip';
 
+	# Try inline as the external program fails on Windows
+	# http://www.cpantesters.org/cpan/report/a03259ca-6c02-1014-bd5e-9b11492b42cd
 	eval 'require IO::Uncompress::Unzip';
 	if($@) {
 		system("unzip $zip");
