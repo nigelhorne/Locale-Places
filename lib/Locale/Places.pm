@@ -2,6 +2,8 @@ package Locale::Places;
 
 # TODO:  Investigate https://github.com/x88/i18nGeoNamesDB
 
+=encoding utf8
+
 use strict;
 use warnings;
 
