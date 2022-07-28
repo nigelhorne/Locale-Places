@@ -2,8 +2,6 @@ package Locale::Places;
 
 # TODO:  Investigate https://github.com/x88/i18nGeoNamesDB
 
-=encoding utf8
-
 use strict;
 use warnings;
 
@@ -12,6 +10,8 @@ use CHI;
 use File::Spec;
 use Locale::Places::DB::GB;
 use Module::Info;
+
+=encoding utf8
 
 =head1 NAME
 
@@ -245,7 +245,7 @@ Only supports towns and cities in GB at the moment.
 Canterbury no longer translates to Cantorbéry in French.
 This is a problem with the data, which has this line:
 
-    16324587	2653877	fr	Canterbury	1					
+    16324587	2653877	fr	Canterbury	1
 
 which overrides the translation by setting the 'isPreferredName' flag
 
