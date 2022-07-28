@@ -1,5 +1,7 @@
 package Locale::Places;
 
+=encoding utf8
+
 use strict;
 use warnings;
 
