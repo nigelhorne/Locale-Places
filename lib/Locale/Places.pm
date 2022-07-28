@@ -131,15 +131,19 @@ sub translate {
 	$self->{'gb'} ||= Locale::Places::DB::GB->new(no_entry => 1);
 
 	# my @places = @{$self->{'gb'}->selectall_hashref({ type => $from, data => $place, ispreferredname => 1 })};
+	# ::diag("$place: $from => $to");
 	my @places = $self->{'gb'}->code2({ type => $from, data => $place, ispreferredname => 1 });
+	# ::diag(__LINE__, ': Number of matches = ', scalar(@places));
 	if(scalar(@places) == 0) {
 		# @places = @{$self->{'gb'}->selectall_hashref({ type => $from, data => $place })};
 		@places = $self->{'gb'}->code2({ type => $from, data => $place });
+		# ::diag(__LINE__, ': Number of matches = ', scalar(@places));
 	}
 
 	if(scalar(@places) == 1) {
 		if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
 		# if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0]->{'code2'} })) {
+			# ::diag(__LINE__, ": $places[0]: $data");
 			return $data;
 		}
 	} elsif(scalar(@places) > 1) {
@@ -233,6 +237,13 @@ Nigel Horne, C<< <njh at bandsman.co.uk> >>
 =head1 BUGS
 
 Only supports towns and cities in GB at the moment.
+
+Canterbury no longer translates to Cantorbéry in French.
+This is a problem with the data, which has this line:
+
+    16324587	2653877	fr	Canterbury	1					
+
+which overrides the translation by setting the 'isPreferredName' flag
 
 =head1 SEE ALSO
 
