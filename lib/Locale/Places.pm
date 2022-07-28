@@ -1,5 +1,7 @@
 package Locale::Places;
 
+# TODO:  Investigate https://github.com/x88/i18nGeoNamesDB
+
 use strict;
 use warnings;
 
