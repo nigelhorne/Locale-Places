@@ -32,6 +32,8 @@ TRANSLATE: {
 
 	delete $ENV{'LANGUAGE'};
 
+	diag($places->translate(place => 'Canterbury', from => 'en', to => 'fr'));
+
 	$ENV{'LANG'} = 'fr_FR';
 	is($places->translate(place => 'Dover', 'from' => 'en'), 'Douvres', 'Target LANG set to French');
 
