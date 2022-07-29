@@ -32,11 +32,11 @@ TRANSLATE: {
 
 	delete $ENV{'LANGUAGE'};
 
+	diag($places->translate(place => 'Canterbury', from => 'en', to => 'fr'));
 	TODO: {
 		# Should be Cantorbéry.   See BUGS in the documentation
 		local $TODO = 'Canterbury should translate to Cantorbéry';
 
-		# diag($places->translate(place => 'Canterbury', from => 'en', to => 'fr'));
 		cmp_ok($places->translate({ place => 'Canterbury', from => 'en', to => 'fr' }), 'eq', 'Cantorbéry', 'Translate to Cantorbéry has started to work');
 	}
 
