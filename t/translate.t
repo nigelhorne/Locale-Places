@@ -33,7 +33,8 @@ TRANSLATE: {
 	delete $ENV{'LANGUAGE'};
 
 	TODO: {
-		# Should be Cantorbéry.   See BUGS in the documentation
+		# Should be Cantorbéry.  See BUGS in the documentation
+		# https://www.geonames.org/2653877/canterbury.html
 		local $TODO = 'Canterbury should translate to Cantorbéry';
 
 		# diag($places->translate(place => 'Canterbury', from => 'en', to => 'fr'));
