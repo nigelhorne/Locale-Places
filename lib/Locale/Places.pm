@@ -98,9 +98,12 @@ sub translate {
 		%params = %{$_[0]};
 	} elsif(scalar(@_) % 2 == 0) {
 		%params = @_;
-	} else {
+	} elsif(scalar(@_) == 1) {
 		$params{'place'} = shift;
 		$params{'from'} = 'en';
+	} else {
+		Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
+		return;
 	}
 
 	my $place = $params{'place'};
