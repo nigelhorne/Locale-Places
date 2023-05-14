@@ -118,7 +118,8 @@ if(!(-r 'lib/Locale/Places/databases/GB.csv')) {
 	# http://www.cpantesters.org/cpan/report/a03259ca-6c02-1014-bd5e-9b11492b42cd
 	eval 'require IO::Uncompress::Unzip';
 	if($@) {
-		system("unzip $zip");
+		system("unzip $zip") or die "unzip $zip failed";
+
 		rename 'GB.txt', 'lib/Locale/Places/databases/GB.csv' or die "rename: $!";
 		unlink 'readme.txt';
 		# Save disc space, but prevent more than one download
