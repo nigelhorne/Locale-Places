@@ -36,6 +36,7 @@ jobs:
           run: |
             sudo hostname example.com
             sudo ${{ matrix.os.pkginstall }}
+            yes | sudo cpan -i App::cpanminus
             curl -L https://cpanmin.us | sudo perl - --notest --installdeps --with-configure --with-develop .
             sudo chown -R runner:runner .
             perl Makefile.PL
