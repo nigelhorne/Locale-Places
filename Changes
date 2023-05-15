@@ -5,6 +5,7 @@ Revision history for Locale::Places
 	Added bin/translate.PL
 	translate(): improved params validation
 	Catch unzip failures
+	Calling new on an object now returns a clone rather than setting the defaults in the new object
 
 0.07	Sat Mar 19 14:37:45 EDT 2022
 	Handle the case when there are more than one preferred value but

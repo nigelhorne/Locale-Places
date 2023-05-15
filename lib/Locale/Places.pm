@@ -46,24 +46,27 @@ Any other options are passed to the underlying database driver.
 =cut
 
 sub new {
-	my($proto, %param) = @_;
+	my($proto, %args) = @_;
 	my $class = ref($proto) || $proto;
 
 	if(!defined($class)) {
-		# Using Locale::Places->new, not Locale::Places::new
+		# Locale::Places::new() used rather than Locale::Places->new()
 		# carp(__PACKAGE__, ' use ->new() not ::new() to instantiate');
 		# return;
 		$class = __PACKAGE__;
+	} elsif(ref($class)) {
+		# clone the given object
+		return bless { %{$class}, %args }, ref($class);
 	}
 
-	my $directory = delete $param{'directory'} || Module::Info->new_from_loaded(__PACKAGE__)->file();
+	my $directory = delete $args{'directory'} || Module::Info->new_from_loaded(__PACKAGE__)->file();
 	$directory =~ s/\.pm$//;
 
 	Locale::Places::DB::init({
 		directory => File::Spec->catfile($directory, 'databases'),
 		no_entry => 1,
-		cache => $param{cache} || CHI->new(driver => 'Memory', datastore => {}),
-		%param
+		cache => $args{cache} || CHI->new(driver => 'Memory', datastore => {}),
+		%args
 	});
 
 	return bless { }, $class;
@@ -279,10 +282,6 @@ L<http://cpants.cpanauthors.org/dist/Locale-Places>
 =item * CPAN Testers' Matrix
 
 L<http://matrix.cpantesters.org/?dist=Locale-Places>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Locale-Places>
 
 =item * CPAN Testers Dependencies
 
