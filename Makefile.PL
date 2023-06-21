@@ -122,10 +122,6 @@ if(!(-r 'lib/Locale/Places/databases/GB.csv')) {
 
 		rename 'GB.txt', 'lib/Locale/Places/databases/GB.csv' or die "rename: $!";
 		unlink 'readme.txt';
-		# Save disc space, but prevent more than one download
-		if(open(my $fout, '>', $zip)) {
-			close($fout);
-		}
 	} elsif(open(my $fout, '>', 'lib/Locale/Places/databases/GB.csv')) {
 		IO::Uncompress::Unzip->import();
 		my $fin = IO::Uncompress::Unzip->new($zip);
@@ -138,6 +134,11 @@ if(!(-r 'lib/Locale/Places/databases/GB.csv')) {
 			}
 		} while($fin->nextStream());
 	}
+	# Save disc space, but prevent more than one download
+	# if(open(my $fout, '>', $zip)) {
+		# close($fout);
+	# }
+	truncate $zip, 0;
 }
 
 die if(!(-r 'lib/Locale/Places/databases/GB.csv'));
