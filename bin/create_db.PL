@@ -18,7 +18,8 @@ sub doit($$);
 BEGIN {
 	$SIG{__WARN__} = sub {
 		my $warning = shift;
-		if($warning =~ /^Use of uninitialized value/) {
+		if(($warning =~ /^Use of uninitialized value/) ||
+		   ($warning =~ /isn't numeric in numeric eq /i)) {
 			die $warning;
 		}
 	}
