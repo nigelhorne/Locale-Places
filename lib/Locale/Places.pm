@@ -257,6 +257,8 @@ which overrides the translation by setting the 'isPreferredName' flag
 
 =head1 SEE ALSO
 
+L<Locale::Country::Multilingual> to translate country names.
+
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
@@ -295,7 +297,7 @@ L<https://groups.google.com/g/geonames>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright 2020-2022 Nigel Horne.
+Copyright 2020-2023 Nigel Horne.
 
 This program is released under the following licence: GPL2
 
