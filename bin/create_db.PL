@@ -121,6 +121,8 @@ sub flush($$)
 			$query .= ',(';
 		}
 
+		$value->{'code1'} =~ s/'/''/g;
+		$value->{'code2'} =~ s/'/''/g;
 		$query .= $value->{'code1'} . ",'" . $value->{'code2'} . "',";
 
 		if($value->{'type'} && ($value->{'type'} ne '')) {

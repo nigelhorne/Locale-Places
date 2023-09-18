@@ -30,7 +30,7 @@ foreach my $dir(@dirs) {
 }
 
 my %urls = (
-	"https://$site/export/dump/GB.zip" => 'lib/Locale/Places/databases/GB.zip',
+	"https://$site/export/dump/alternatenames/GB.zip" => 'lib/Locale/Places/databases/GB.zip',
 );
 
 # unlink('lib/Geo/Coder/Free/MaxMind/databases/cities.sql');
