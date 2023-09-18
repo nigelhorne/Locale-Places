@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-# Create SQLite3 from http://download.geonames.org/export/dump/alternatenames/GB.zip
+# Create SQLite3 from http://download.geonames.org/export/dump/GB.zip
 
 use strict;
 use warnings;
@@ -108,7 +108,7 @@ sub doit($$) {
 	return \%queue;
 }
 
-sub flush($)
+sub flush($$)
 {
 	my ($dbh, $queue) = @_;
 
@@ -121,7 +121,7 @@ sub flush($)
 			$query .= ',(';
 		}
 
-		$query .= $value->{'code1'} . ',' . $value->{'code2'} . ',';
+		$query .= $value->{'code1'} . ",'" . $value->{'code2'} . "',";
 
 		if($value->{'type'} && ($value->{'type'} ne '')) {
 			$query .= "'" . $value->{'type'} . "',";
@@ -153,8 +153,8 @@ sub flush($)
 		$dbh->do($query);
 	} catch {
 		my @call_details = caller(0);
-		# die "Error in insert ($query) called from line ",
-		die "Error in insert called from line ",
+		die "Error in insert ($query) called from line ",
+		# die "Error in insert called from line ",
 			$call_details[2], ': ', $dbh->errstr();
 	};
 }
