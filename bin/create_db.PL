@@ -153,7 +153,8 @@ sub flush($)
 		$dbh->do($query);
 	} catch {
 		my @call_details = caller(0);
-		die "Error in insert ($query) called from line ",
+		# die "Error in insert ($query) called from line ",
+		die "Error in insert called from line ",
 			$call_details[2], ': ', $dbh->errstr();
 	};
 }
