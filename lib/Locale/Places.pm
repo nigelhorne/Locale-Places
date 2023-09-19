@@ -17,7 +17,7 @@ use Module::Info;
 
 =head1 NAME
 
-Locale::Places - Translate towns and cities between different languages using http://download.geonames.org/
+Locale::Places - Translate places between different languages using http://download.geonames.org/
 
 =head1 VERSION
 
@@ -29,7 +29,7 @@ our $VERSION = '0.08';
 
 =head1 SYNOPSIS
 
-Translates towns and cities between different languages, for example
+Translates places between different languages, for example
 London is Londres in French.
 
 =head1 METHODS
@@ -258,7 +258,7 @@ Nigel Horne, C<< <njh at bandsman.co.uk> >>
 
 =head1 BUGS
 
-Only supports towns and cities in GB and US at the moment.
+Only supports places in GB and US at the moment.
 
 Canterbury no longer translates to Cantorbéry in French.
 This is a problem with the data, which has this line:
