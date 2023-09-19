@@ -1,6 +1,7 @@
 package Locale::Places;
 
-# TODO:  Investigate https://github.com/x88/i18nGeoNamesDB
+# TODO:	Investigate https://github.com/x88/i18nGeoNamesDB
+# TODO:	US State names
 
 use strict;
 use warnings;
@@ -9,13 +10,14 @@ use Carp;
 use CHI;
 use File::Spec;
 use Locale::Places::DB::GB;
+use Locale::Places::DB::US;
 use Module::Info;
 
 =encoding utf8
 
 =head1 NAME
 
-Locale::Places - Translate places between different languages using http://download.geonames.org/
+Locale::Places - Translate towns and cities between different languages using http://download.geonames.org/
 
 =head1 VERSION
 
@@ -82,11 +84,13 @@ at least one of which must be given.
 If neither $to nor $from is given,
 the code makes a best guess based on the environment.
 If no translation can be found, returns place in the original language.
+Takes an optional argument 'country' which can be either GB (the default) or US
+which is the country of that 'place' is in.
 
    use Locale::Places;
 
    # Prints "Douvres"
-   print Locale::Places->new()->translate({ place => 'Dover', from => 'en', to => 'fr' });
+   print Locale::Places->new()->translate({ place => 'Dover', country => 'GB', from => 'en', to => 'fr' });
 
    # Prints "Douvres" if we're working on a French system
    print Locale::Places->new()->translate('Dover');
@@ -105,13 +109,13 @@ sub translate {
 		$params{'place'} = shift;
 		$params{'from'} = 'en';
 	} else {
-		Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
+		Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2 [ , country => $country ])');
 		return;
 	}
 
 	my $place = $params{'place'};
 	if(!defined($place)) {
-		Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
+		Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2 [ , country => $country ])');
 		return;
 	}
 
@@ -120,7 +124,7 @@ sub translate {
 	if((!defined($from)) && !defined($to)) {
 		$to ||= $self->_get_language();
 		if(!defined($to)) {
-			Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2)');
+			Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2 [ , country => $country ])');
 			return;
 		}
 	}
@@ -137,22 +141,30 @@ sub translate {
 	}
 	return $place if($to eq $from);
 
-	# TODO: Add a country argument and choose a database based on that
-	$self->{'gb'} ||= Locale::Places::DB::GB->new(no_entry => 1);
+	my $country = $params{'country'} || 'GB';
+	my $db;
 
-	# my @places = @{$self->{'gb'}->selectall_hashref({ type => $from, data => $place, ispreferredname => 1 })};
+	if(defined($country) && ($country eq 'US')) {
+		$self->{'US'} ||= Locale::Places::DB::US->new(no_entry => 1);
+		$db = $self->{'US'};
+	} else {
+		$self->{'GB'} ||= Locale::Places::DB::GB->new(no_entry => 1);
+		$db = $self->{'GB'};
+	}
+
+	# my @places = @{$db->selectall_hashref({ type => $from, data => $place, ispreferredname => 1 })};
 	# ::diag("$place: $from => $to");
-	my @places = $self->{'gb'}->code2({ type => $from, data => $place, ispreferredname => 1 });
+	my @places = $db->code2({ type => $from, data => $place, ispreferredname => 1 });
 	# ::diag(__LINE__, ': Number of matches = ', scalar(@places));
 	if(scalar(@places) == 0) {
-		# @places = @{$self->{'gb'}->selectall_hashref({ type => $from, data => $place })};
-		@places = $self->{'gb'}->code2({ type => $from, data => $place });
+		# @places = @{$db->selectall_hashref({ type => $from, data => $place })};
+		@places = $db->code2({ type => $from, data => $place });
 		# ::diag(__LINE__, ': Number of matches = ', scalar(@places));
 	}
 
 	if(scalar(@places) == 1) {
-		if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
-		# if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0]->{'code2'} })) {
+		if(my $data = $db->data({ type => $to, code2 => $places[0] })) {
+		# if(my $data = $db->data({ type => $to, code2 => $places[0]->{'code2'} })) {
 			# ::diag(__LINE__, ": $places[0]: $data");
 			return $data;
 		}
@@ -167,7 +179,7 @@ sub translate {
 		my $candidate;
 		my $found_something;
 		foreach my $place(@places) {
-			if(my $data = $self->{'gb'}->data({ type => $to, code2 => $place })) {
+			if(my $data = $db->data({ type => $to, code2 => $place })) {
 				$found_something = 1;
 				if(defined($candidate)) {
 					if($data ne $candidate) {
@@ -181,36 +193,36 @@ sub translate {
 		return $candidate if(defined($candidate));
 		return $place if(!defined($found_something));
 
-		@places = $self->{'gb'}->code2({ type => $from, data => $place, ispreferredname => 1, isshortname => undef });
+		@places = $db->code2({ type => $from, data => $place, ispreferredname => 1, isshortname => undef });
 		if(scalar(@places) == 1) {
-			if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
+			if(my $data = $db->data({ type => $to, code2 => $places[0] })) {
 				return $data;
 			}
-			@places = $self->{'gb'}->code2({ type => $from, data => $place, ispreferredname => 1, isshortname => 1 });
+			@places = $db->code2({ type => $from, data => $place, ispreferredname => 1, isshortname => 1 });
 			if(scalar(@places) == 1) {
-				if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
+				if(my $data = $db->data({ type => $to, code2 => $places[0] })) {
 					return $data;
 				}
 				# Can't find anything
 				return $place;
 			}
 		} elsif(scalar(@places) == 0) {
-			@places = $self->{'gb'}->code2({ type => $from, data => $place, isshortname => undef });
+			@places = $db->code2({ type => $from, data => $place, isshortname => undef });
 			if(scalar(@places) == 1) {
-				if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
+				if(my $data = $db->data({ type => $to, code2 => $places[0] })) {
 					return $data;
 				}
 			}
-			@places = $self->{'gb'}->code2({ type => $from, data => $place });
+			@places = $db->code2({ type => $from, data => $place });
 			if(scalar(@places) == 1) {
-				if(my $data = $self->{'gb'}->data({ type => $to, code2 => $places[0] })) {
+				if(my $data = $db->data({ type => $to, code2 => $places[0] })) {
 					return $data;
 				}
 			}
 		}
 		Carp::croak(__PACKAGE__, ': database has ', scalar(@places), " entries for $place in language $to: ", join(', ', @places));
 		# foreach my $p(@places) {
-			# if(my $line = $self->{'gb'}->fetchrow_hashref({ type => $to, code2 => $p->{'code2'} })) {
+			# if(my $line = $db->fetchrow_hashref({ type => $to, code2 => $p->{'code2'} })) {
 				# return $line->{'data'};
 			# }
 		# }
@@ -246,7 +258,7 @@ Nigel Horne, C<< <njh at bandsman.co.uk> >>
 
 =head1 BUGS
 
-Only supports towns and cities in GB at the moment.
+Only supports towns and cities in GB and US at the moment.
 
 Canterbury no longer translates to Cantorbéry in French.
 This is a problem with the data, which has this line:
