@@ -92,9 +92,10 @@ sub doit($$) {
 
 		my ($code1, $code2, $type, $data, $ispreferredname, $isshortname) = split(/\t/, $line);
 		die "Can't parse the line '$line'" unless(defined($type));
-		next if($type eq 'link');
-		next if($type eq 'wkdt');
-		next if($type eq 'post');
+		# next if($type eq 'link');
+		# next if($type eq 'wkdt');
+		# next if($type eq 'post');
+		next if(length($type) != 2);
 
 		# print __LINE__, ": $code1=>$data=>$ispreferredname\n";
 
