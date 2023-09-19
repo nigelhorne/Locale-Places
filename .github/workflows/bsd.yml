@@ -37,7 +37,7 @@ jobs:
             sudo hostname example.com
             sudo ${{ matrix.os.pkginstall }}
             yes | sudo cpan -i App::cpanminus
-            sudo cpanm --skip-satisfied -iqn File::Copy File::Open::NoCache::ReadOnly IO::Uncompress::Unzip LWP::Simple
+            sudo cpanm --skip-satisfied -iqn File::Copy File::Open::NoCache::ReadOnly IO::Uncompress::Unzip LWP::Simple CHI
             sudo chown -R runner:runner .
             perl Makefile.PL
             curl -L https://cpanmin.us | sudo perl - --notest --installdeps --with-configure --with-develop .
