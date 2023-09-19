@@ -4,7 +4,7 @@ Locale::Places - Translate places between different languages using http://downl
 
 # VERSION
 
-Version 0.07
+Version 0.08
 
 # SYNOPSIS
 

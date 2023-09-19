@@ -1,6 +1,6 @@
 Revision history for Locale::Places
 
-0.08
+0.08	Tue Sep 19 11:19:41 EDT 2023
 	New URL for GB.zip
 	Look into http://www.cpantesters.org/cpan/report/a03259ca-6c02-1014-bd5e-9b11492b42cd
 	Added bin/translate.PL
