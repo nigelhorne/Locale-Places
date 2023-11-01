@@ -3,6 +3,7 @@ Revision history for Locale::Places
 0.09
 	Added US places
 	Latest DB.pm from NJH-Snippets
+	Change the mode of the cachedir to 2755
 
 0.08	Tue Sep 19 11:19:41 EDT 2023
 	New URL for GB.zip
