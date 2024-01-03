@@ -1,5 +1,6 @@
 ---
 # See https://github.com/actions/virtual-environments
+# https://github.com/marketplace/actions/setup-perl-environment
 
 name: Test Code
 on:
@@ -40,4 +41,4 @@ jobs:
       - name: Run Tests
         run: prove -l -b t
         env:
-          AUTHOR_TESTING: 1
+          AUTOMATED_TESTING: 1
