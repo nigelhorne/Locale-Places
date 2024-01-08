@@ -68,6 +68,7 @@ sub new {
 		directory => File::Spec->catfile($directory, 'databases'),
 		no_entry => 1,
 		cache => $args{cache} || CHI->new(driver => 'Memory', datastore => {}),
+		cache_duration => '1 week',
 		%args
 	});
 
@@ -309,7 +310,7 @@ L<https://groups.google.com/g/geonames>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright 2020-2023 Nigel Horne.
+Copyright 2020-2024 Nigel Horne.
 
 This program is released under the following licence: GPL2
 
