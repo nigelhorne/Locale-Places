@@ -123,15 +123,18 @@ foreach my $country('GB', 'US') {
 			unlink 'readme.txt';
 		} elsif(open(my $fout, '>', "lib/Locale/Places/databases/$country.csv")) {
 			IO::Uncompress::Unzip->import();
-			my $fin = IO::Uncompress::Unzip->new($zip);
-			do {
-				if($fin->getHeaderInfo->{'Name'} eq "$country.txt") {
-					while(my $line = $fin->getline()) {
-						print $fout $line;
+			if(my $fin = IO::Uncompress::Unzip->new($zip)) {
+				do {
+					if($fin->getHeaderInfo->{'Name'} eq "$country.txt") {
+						while(my $line = $fin->getline()) {
+							print $fout $line;
+						}
+						# last; # Gives syntax error that it's not in a loop :-(
 					}
-					# last; # Gives syntax error that it's not in a loop :-(
-				}
-			} while($fin->nextStream());
+				} while($fin->nextStream());
+			} else {
+				die "lib/Locale/Places/databases/$country.csv: $IO::Uncompress::Unzip::UnzipError";
+			}
 		}
 		# Save disc space, but prevent more than one download
 		# if(open(my $fout, '>', $zip)) {
