@@ -4,6 +4,8 @@
 
 use strict;
 use warnings;
+
+use autodie qw(:all);
 use Test::Most tests => 6;
 use lib 't/lib';
 use MyLogger;
