@@ -182,6 +182,8 @@ WriteMakefile(
 		'LWP::Simple' => 0,
 		'Try::Tiny' => 0,
 	}, TEST_REQUIRES => {
+		'autodie' => 0,
+		'IPC::System::Simple' => 0,
 		'Test::Carp' => 0,
 		'Test::Most' => 0,
 	}, PREREQ_PM => {
