@@ -29,8 +29,10 @@ foreach my $dir(@dirs) {
 	}
 }
 
-# unlink('lib/Geo/Coder/Free/MaxMind/databases/cities.sql');
-if(eval { require HTTP::Cache::Transparent; }) {
+eval { require 'autodie' };
+
+# unlink('lib/Locale/Places/databases/GB.sql');
+if(eval { require HTTP::Cache::Transparent }) {
 	HTTP::Cache::Transparent->import();
 	my $cachedir;
 	if(my $e = $ENV{'CACHEDIR'}) {
@@ -133,8 +135,9 @@ foreach my $country('GB', 'US') {
 					}
 				} while($fin->nextStream());
 			} else {
-				die "lib/Locale/Places/databases/$country.csv: $IO::Uncompress::Unzip::UnzipError";
+				die "$zip: $IO::Uncompress::Unzip::UnzipError";
 			}
+			close $fout || die "$zip: $!";
 		}
 		# Save disc space, but prevent more than one download
 		# if(open(my $fout, '>', $zip)) {
