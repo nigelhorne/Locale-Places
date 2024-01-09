@@ -23,6 +23,8 @@ if(defined($ENV{'GITHUB_ACTION'}) || defined($ENV{'TRAVIS_PERL_VERSION'})) {
 	$ENV{'AUTOMATED_TESTING'} = 1;
 }
 
+my @countries = $ENV{'AUTOMATED_TESTING'} ? ('GB') : ('GB', 'US');
+
 my @dirs = (
 	'lib/Locale/Places/databases',
 );
@@ -78,7 +80,7 @@ if(eval { require LWP::Simple::WithCache; }) {
 	}
 }
 
-foreach my $country('GB', 'US') {
+foreach my $country(@countries) {
 	my $url = "https://$site/export/dump/alternatenames/$country.zip";
 	my $file = "lib/Locale/Places/databases/$country.zip";
 
