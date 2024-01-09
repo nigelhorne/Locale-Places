@@ -18,6 +18,11 @@ if(!IO::Socket::INET->new(PeerAddr => "$site:80", Timeout => 5)) {
 	exit(0);
 }
 
+if(defined($ENV{'GITHUB_ACTION'}) || defined($ENV{'TRAVIS_PERL_VERSION'})) {
+	# Prevent downloading and installing stuff
+	$ENV{'AUTOMATED_TESTING'} = 1;
+}
+
 my @dirs = (
 	'lib/Locale/Places/databases',
 );
@@ -95,16 +100,32 @@ foreach my $country('GB', 'US') {
 		print "Downloading $url to $file if a newer version is available\n";
 		if($use_withcache &&
 		   LWP::Simple::WithCache::is_error(my $rc = LWP::Simple::WithCache::mirror($url, $file))) {
+			if($ENV{'AUTOMATED_TESTING'}) {
+				print STDERR "Can't download $url";
+				exit(0);
+			}
 			die "$url: LWP error $rc";
 		} elsif(LWP::Simple::is_error($rc = LWP::Simple::mirror($url, $file))) {
+			if($ENV{'AUTOMATED_TESTING'}) {
+				print STDERR "Can't download $url";
+				exit(0);
+			}
 			die "$url: LWP error $rc";
 		}
 	} else {
 		print "Downloading $url to $file\n";
 		if($use_withcache &&
 		   LWP::Simple::WithCache::is_error(my $rc = LWP::Simple::WithCache::getstore($url, $file))) {
+			if($ENV{'AUTOMATED_TESTING'}) {
+				print STDERR "Can't download $url";
+				exit(0);
+			}
 			die "$url: LWP error $rc";
 		} elsif(LWP::Simple::is_error($rc = LWP::Simple::getstore($url, $file))) {
+			if($ENV{'AUTOMATED_TESTING'}) {
+				print STDERR "Can't download $url";
+				exit(0);
+			}
 			die "$url: LWP error $rc";
 		}
 	}
@@ -134,6 +155,9 @@ foreach my $country('GB', 'US') {
 						# last; # Gives syntax error that it's not in a loop :-(
 					}
 				} while($fin->nextStream());
+			} elsif($ENV{'AUTOMATED_TESTING'}) {
+				print STDERR "$zip: $IO::Uncompress::Unzip::UnzipError\n";
+				exit(0);
 			} else {
 				die "$zip: $IO::Uncompress::Unzip::UnzipError";
 			}
