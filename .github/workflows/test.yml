@@ -26,6 +26,9 @@ jobs:
           - windows-2019
         perl: ['5.38', '5.36', '5.34', '5.32', '5.30', '5.28', '5.22']
     name: Perl ${{ matrix.perl }} on ${{ matrix.os }}
+    env:
+      AUTOMATED_TESTING: 1
+      AUTHOR_TESTING: 1
     steps:
       - uses: actions/checkout@v4
       - name: Setup perl
@@ -37,17 +40,12 @@ jobs:
         run: |
           cpanm -iqn --skip-satisfied ExtUtils::PL2Bat File::Spec ExtUtils::MakeMaker LWP::Simple::WithCache LWP::Protocol::https
           cpanm -iqn --skip-satisfied Test::Pod::Spelling::CommonMistakes
-          cpanm -iqn --skip-satisfied autodie Test::Portability::Files Test::Carp Test::Pod::Coverage
+          cpanm -iqn --skip-satisfied Test::Portability::Files Test::Carp Test::Pod::Coverage
           cpanm -iqn --skip-satisfied --installdeps --notest .
       - name: Make Module
         run: |
           # find . -name build.log | xargs cat
           perl Makefile.PL
           make
-        env:
-          AUTOMATED_TESTING: 1
       - name: Run Tests
         run: prove -l -b t
-        env:
-          AUTOMATED_TESTING: 1
-          AUTHOR_TESTING: 1

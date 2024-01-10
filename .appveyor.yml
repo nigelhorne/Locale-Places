@@ -36,7 +36,7 @@ install:
   - perl -V
   - cmd: mkdir %APPVEYOR_BUILD_FOLDER%\tmp
   - cmd: set TMPDIR=%APPVEYOR_BUILD_FOLDER%\tmp
-  - cpan -i App::cpanminus autodie
+  - cpan -i App::cpanminus
   - cmd: cpanm -q --showdeps --with-develop --with-suggests . | findstr /v "^perl\>" | cpanm -qin --skip-satisfied
   - cpanm -qin --skip-satisfied --installdeps .
   - cmd: 'echo End install at: & time /t'

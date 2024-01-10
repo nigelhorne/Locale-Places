@@ -19,14 +19,18 @@ if(defined($ENV{'GITHUB_ACTION'}) || defined($ENV{'TRAVIS_PERL_VERSION'}) || def
 }
 
 my @countries = ($ENV{'AUTOMATED_TESTING'} || $ENV{'NO NETWORK TESTING'}) ? () : ('GB', 'US');
-my $build_requires;
+my $build_requires = {};
+my $test_requires = {
+	'Test::Carp' => 0,
+	'Test::Most' => 0
+};
 
 if(scalar(@countries)) {
-	# TODO: same for test_requires - needing autodie
 	$build_requires = {	# For bin/create_sqlite
 		'DBI' => 0,
 		'File::Copy' => 0,
 	};
+	$test_requires->{'autodie'} = 0;
 
 	my @dirs = (
 		'lib/Locale/Places/databases',
@@ -211,11 +215,8 @@ WriteMakefile(
 		'File::Which' => 0,
 		'LWP::Simple' => 0,
 		'Try::Tiny' => 0,
-	}, TEST_REQUIRES => {
-		'autodie' => 0,
-		'Test::Carp' => 0,
-		'Test::Most' => 0,
-	}, PREREQ_PM => {
+	}, TEST_REQUIRES => $test_requires,
+	PREREQ_PM => {
 		'CHI' => 0,
 		'DBI' => 0,
 		'DBD::CSV' => 0,
