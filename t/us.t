@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 
-use autodie qw(:all);
+# use autodie qw(:all);
 use Test::Most tests => 6;
 use lib 't/lib';
 use MyLogger;
@@ -20,6 +20,8 @@ US: {
 
 	SKIP: {
 		if(!defined($ENV{'AUTOMATED_TESTING'})) {
+			eval { require 'autodie' };
+
 			my $dc = $places->fetchrow_hashref({ data => 'Washington DC', type => 'en' });
 			if($ENV{'TEST_VERBOSE'}) {
 				require Data::Dumper;

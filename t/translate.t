@@ -20,6 +20,8 @@ TRANSLATE: {
 
 	SKIP: {
 		if(!defined($ENV{'AUTOMATED_TESTING'})) {
+			eval { require 'autodie' };
+
 			like($places->translate(place => 'London', from => 'en', to => 'fr'), qr/Londres$/, 'French for London is Londres');
 			like($places->translate(place => 'Londres', from => 'fr', to => 'en'), qr/London$/, 'English for Londres is London');
 			is($places->translate({ place => 'London', from => 'en', to => 'en' }), 'London', 'English for London is London');
