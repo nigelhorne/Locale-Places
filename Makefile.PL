@@ -8,11 +8,6 @@ use IO::Socket::INET;
 
 my $site = 'download.geonames.org';
 
-if($ENV{'NO_NETWORK_TESTING'}) {
-	print STDERR "NA: NO_NETWORK_TESTING is defined\n";
-	exit(0);
-}
-
 if(!IO::Socket::INET->new(PeerAddr => "$site:80", Timeout => 5)) {
 	print STDERR "NA: Can't connect to $site\n";
 	exit(0);
@@ -23,7 +18,7 @@ if(defined($ENV{'GITHUB_ACTION'}) || defined($ENV{'TRAVIS_PERL_VERSION'}) || def
 	$ENV{'AUTOMATED_TESTING'} = 1;
 }
 
-my @countries = $ENV{'AUTOMATED_TESTING'} ? ('GB') : ('GB', 'US');
+my @countries = ($ENV{'AUTOMATED_TESTING'} || $ENV{'NO NETWORK TESTING'}) ? () : ('GB', 'US');
 
 my @dirs = (
 	'lib/Locale/Places/databases',
