@@ -4,6 +4,7 @@ Revision history for Locale::Places
 	Fix https://github.com/nigelhorne/Locale-Places/issues/6
 		https://github.com/nigelhorne/Locale-Places/actions/runs/7452695411/job/20304898625
 	It looks like GZip::Faster doesn't error check
+	Updated DB.pm with some of the latest code from NJH-Snippets
 
 0.09	Mon Jan  8 15:11:04 EST 2024
 	Added US places

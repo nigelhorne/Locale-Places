@@ -2,12 +2,12 @@ package Locale::Places::DB;
 
 =head1 NAME
 
-Locale::Places::DB
+Locale::Places::DB - database abstraction layer
 
 =cut
 
 # Author Nigel Horne: njh@bandsman.co.uk
-# Copyright (C) 2015-2023, Nigel Horne
+# Copyright (C) 2015-2024, Nigel Horne
 
 # Usage is subject to licence terms.
 # The licence terms of this software are as follows:
@@ -570,19 +570,32 @@ sub execute {
 	return @rc;
 }
 
-# Time that the database was last updated
+=head2 updated
+
+Time that the database was last updated
+
+=cut
+
 sub updated {
 	my $self = shift;
 
 	return $self->{'_updated'};
 }
 
-# Return the contents of an arbitrary column in the database which match the
-#	given criteria
-# Returns an array of the matches, or just the first entry when called in
-#	scalar context
+=head2 AUTOLOAD
 
-# Set distinct to 1 if you're after a unique list
+Return the contents of an arbitrary column in the database which match the
+given criteria
+Returns an array of the matches, or just the first entry when called in
+scalar context
+
+If the first column if the database is "entry" you can do a quick lookup with
+    my $value = $table->column($entry);	# where column is the value you're after
+
+Set distinct to 1 if you're after a unique list
+
+=cut
+
 sub AUTOLOAD {
 	our $AUTOLOAD;
 	my $column = $AUTOLOAD;
@@ -598,7 +611,14 @@ sub AUTOLOAD {
 
 	$self->_open() if(!$self->{$table});
 
-	my %params = (ref($_[0]) eq 'HASH') ? %{$_[0]} : @_;
+	my %params;
+        if(ref($_[0]) eq 'HASH') {
+                %params = %{$_[0]};
+        } elsif((scalar(@_) % 2) == 0) {
+                %params = @_;
+        } elsif(scalar(@_) == 1) {
+                $params{'entry'} = shift;
+        }
 
 	my $query;
 	my $done_where = 0;
@@ -610,6 +630,21 @@ sub AUTOLOAD {
 			$query = "SELECT $column FROM $table";
 		}
 	} else {
+		if($self->{'data'} && ((scalar keys %params) == 1)) {
+			# The data has been read in using Text::xSV::Slurp, and it's a simple query
+			#	so no need to do any SQL
+			my ($key, $value) = %params;
+			if(my $data = $self->{'data'}) {
+				foreach my $row(@{$data}) {
+					if(($row->{$key} eq $value) && (my $rc = $row->{$column})) {
+						if($self->{'logger'}) {
+							$self->{'logger'}->trace("AUTOLOAD return '$rc' from slurped data");
+						}
+						return $rc;
+					}
+				}
+			}
+		}
 		if(($self->{'type'} eq 'CSV') && !$self->{no_entry}) {
 			$query = "SELECT DISTINCT $column FROM $table WHERE entry IS NOT NULL AND entry NOT LIKE '#%'";
 			$done_where = 1;
@@ -619,6 +654,9 @@ sub AUTOLOAD {
 	}
 	my @args;
 	while(my ($key, $value) = each %params) {
+		if($self->{'logger'}) {
+			$self->{'logger'}->debug(__PACKAGE__, ": AUTOLOAD adding $key=>$value");
+		}
 		if(defined($value)) {
 			if($done_where) {
 				$query .= " AND $key = ?";
@@ -639,8 +677,9 @@ sub AUTOLOAD {
 			}
 		}
 	}
-	$query .= " ORDER BY $column";
-	if(!wantarray) {
+	if(wantarray) {
+		$query .= " ORDER BY $column";
+	} else {
 		$query .= ' LIMIT 1';
 	}
 	if($self->{'logger'}) {
@@ -672,5 +711,23 @@ sub DESTROY {
 		$table->finish();
 	}
 }
+
+=head1 AUTHOR
+
+Nigel Horne, C<< <njh at bandsman.co.uk> >>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2015-2024 Nigel Horne.
+
+This program is released under the following licence: GPL2.
+Usage is subject to licence terms.
+The licence terms of this software are as follows:
+Personal single user, single computer use: GPL2
+All other users (for example Commercial, Charity, Educational, Government)
+must apply in writing for a licence for use from Nigel Horne at the
+above e-mail.
+
+=cut
 
 1;
