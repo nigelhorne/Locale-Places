@@ -1,4 +1,4 @@
-package Locale::Places::DB::US;
+package Locale::Places::Database::GB;
 
 use strict;
 use warnings;
@@ -15,11 +15,11 @@ use warnings;
 #	from		  : from period when the name was used
 #	to		  : to period when the name was used
 
-# US.csv is from http://download.geonames.org/export/dump/alternatenames/US.zip
+# GB.csv is from http://download.geonames.org/export/dump/alternatenames/GB.zip
 
-use Locale::Places::DB;
+use Database::Abstraction;
 
-our @ISA = ('Locale::Places::DB');
+our @ISA = ('Database::Abstraction');
 
 # If there's no SQLite file, fall back to the original CSV file, that's when the arguments to _open will be used
 sub _open {

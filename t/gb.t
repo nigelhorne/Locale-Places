@@ -11,12 +11,12 @@ use lib 't/lib';
 use MyLogger;
 
 BEGIN {
-	use_ok('Locale::Places::DB::GB');
+	use_ok('Locale::Places::Database::GB');
 }
 
 GB: {
-	Locale::Places::DB::init(directory => 'lib/Locale/Places/databases');
-	my $places = new_ok('Locale::Places::DB::GB' => [logger => new_ok('MyLogger'), no_entry => 1]);
+	Database::Abstraction::init(directory => 'lib/Locale/Places/databases');
+	my $places = new_ok('Locale::Places::Database::GB' => [logger => new_ok('MyLogger'), no_entry => 1]);
 
 	SKIP: {
 		if(!defined($ENV{'AUTOMATED_TESTING'})) {

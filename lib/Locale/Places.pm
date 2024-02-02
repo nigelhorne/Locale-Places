@@ -9,8 +9,8 @@ use warnings;
 use Carp;
 use CHI;
 use File::Spec;
-use Locale::Places::DB::GB;
-use Locale::Places::DB::US;
+use Locale::Places::Database::GB;
+use Locale::Places::Database::US;
 use Module::Info;
 
 =encoding utf8
@@ -64,7 +64,7 @@ sub new {
 	my $directory = delete $args{'directory'} || Module::Info->new_from_loaded(__PACKAGE__)->file();
 	$directory =~ s/\.pm$//;
 
-	Locale::Places::DB::init({
+	Database::Abstraction::init({
 		directory => File::Spec->catfile($directory, 'databases'),
 		no_entry => 1,
 		cache => $args{cache} || CHI->new(driver => 'Memory', datastore => {}),
@@ -146,10 +146,10 @@ sub translate {
 	my $db;
 
 	if(defined($country) && ($country eq 'US')) {
-		$self->{'US'} ||= Locale::Places::DB::US->new(no_entry => 1);
+		$self->{'US'} ||= Locale::Places::Database::US->new(no_entry => 1);
 		$db = $self->{'US'};
 	} else {
-		$self->{'GB'} ||= Locale::Places::DB::GB->new(no_entry => 1);
+		$self->{'GB'} ||= Locale::Places::Database::GB->new(no_entry => 1);
 		$db = $self->{'GB'};
 	}
 

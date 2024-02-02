@@ -218,6 +218,7 @@ WriteMakefile(
 	}, TEST_REQUIRES => $test_requires,
 	PREREQ_PM => {
 		'CHI' => 0,
+		'Database::Abstraction' => 0,
 		'DBI' => 0,
 		'DBD::CSV' => 0,
 		'DBD::SQLite' => 0,
