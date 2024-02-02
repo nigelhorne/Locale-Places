@@ -146,10 +146,10 @@ sub translate {
 	my $db;
 
 	if(defined($country) && ($country eq 'US')) {
-		$self->{'US'} ||= Locale::Places::Database::US->new(no_entry => 1);
+		$self->{'US'} ||= Locale::Places::Database::US->new();
 		$db = $self->{'US'};
 	} else {
-		$self->{'GB'} ||= Locale::Places::Database::GB->new(no_entry => 1);
+		$self->{'GB'} ||= Locale::Places::Database::GB->new();
 		$db = $self->{'GB'};
 	}
 
