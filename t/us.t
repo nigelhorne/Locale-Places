@@ -51,7 +51,7 @@ US: {
 			cmp_ok($found, '==', 2, 'Should have been 2 matches');
 		} else {
 			diag('AUTOMATED_TESTING: Not testing live data');
-			skip('AUTOMATED_TESTING: Not testing live data', 3);
+			skip('AUTOMATED_TESTING: Not testing live data', 5);
 		}
 	}
 }
