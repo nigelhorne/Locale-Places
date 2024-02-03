@@ -15,11 +15,11 @@ BEGIN {
 }
 
 GB: {
-	Database::Abstraction::init(directory => 'lib/Locale/Places/databases');
-	my $places = new_ok('Locale::Places::Database::GB' => [logger => new_ok('MyLogger'), no_entry => 1]);
-
 	SKIP: {
 		if(!defined($ENV{'AUTOMATED_TESTING'})) {
+			Database::Abstraction::init(directory => 'lib/Locale/Places/databases');
+			my $places = new_ok('Locale::Places::Database::GB' => [logger => new_ok('MyLogger'), no_entry => 1]);
+
 			eval { require 'autodie' };
 
 			my $dover = $places->fetchrow_hashref({ data => 'Dover', type => 'en' });

@@ -15,11 +15,11 @@ BEGIN {
 }
 
 US: {
-	Database::Abstraction::init(directory => 'lib/Locale/Places/databases');
-	my $places = new_ok('Locale::Places::Database::US' => [logger => new_ok('MyLogger'), no_entry => 1]);
-
 	SKIP: {
 		if(!defined($ENV{'AUTOMATED_TESTING'})) {
+			Database::Abstraction::init(directory => 'lib/Locale/Places/databases');
+			my $places = new_ok('Locale::Places::Database::US' => [logger => new_ok('MyLogger'), no_entry => 1]);
+
 			eval { require 'autodie' };
 
 			my $dc = $places->fetchrow_hashref({ data => 'Washington DC', type => 'en' });
