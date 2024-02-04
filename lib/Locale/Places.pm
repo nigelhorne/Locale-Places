@@ -253,6 +253,38 @@ sub _get_language {
 	return;	# undef
 }
 
+=head2 AUTOLOAD
+
+Translate to the given language, where the routine's name will be the target language.
+
+    # Prints 'Virginie', since that's Virginia in French
+    print $places->fr({ place => 'Virginia', from => 'en', country => 'US' });
+
+=cut
+
+sub AUTOLOAD
+{
+	our $AUTOLOAD;
+	my $to = $AUTOLOAD;
+
+	$to =~ s/.*:://;
+
+	return if($to eq 'DESTROY');
+
+	my $self = shift or return;
+
+	my %params;
+        if(ref($_[0]) eq 'HASH') {
+                %params = %{$_[0]};
+        } elsif((scalar(@_) % 2) == 0) {
+                %params = @_;
+        } elsif(scalar(@_) == 1) {
+                $params{'entry'} = shift;
+        }
+
+	return $self->translate(to => $to, %params);
+}
+
 =head1 AUTHOR
 
 Nigel Horne, C<< <njh at bandsman.co.uk> >>

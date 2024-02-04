@@ -22,7 +22,8 @@ my @countries = ($ENV{'AUTOMATED_TESTING'} || $ENV{'NO NETWORK TESTING'}) ? () :
 my $build_requires = {};
 my $test_requires = {
 	'Test::Carp' => 0,
-	'Test::Most' => 0
+	'Test::Most' => 0,
+	'Test::Needs' => 0
 };
 
 if(scalar(@countries)) {
