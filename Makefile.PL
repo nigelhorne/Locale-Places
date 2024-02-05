@@ -160,7 +160,7 @@ if(scalar(@countries)) {
 					do {
 						if($fin->getHeaderInfo->{'Name'} eq "$country.txt") {
 							while(my $line = $fin->getline()) {
-								print $fout $line;
+								print $fout $line or die "Error exploding $zip"
 							}
 							# last; # Gives syntax error that it's not in a loop :-(
 						}
