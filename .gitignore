@@ -35,4 +35,4 @@ inc/
 /*.zip
 
 *.swp
-lib/Locale/Places/databases/
+lib/Locale/Places/data/
