@@ -2,6 +2,19 @@ package Locale::Places::GB;
 
 use strict;
 use warnings;
+use Database::Abstraction;
+
+=head1 NAME
+
+Locale::Places::GB
+
+=head1 VERSION
+
+Version 0.10
+
+=cut
+
+our $VERSION = '0.10';
 
 # From http://download.geonames.org/export/dump/readme.txt
 #	alternateNameId   : the id of this alternate name, int
@@ -16,8 +29,6 @@ use warnings;
 #	to		  : to period when the name was used
 
 # GB.csv is from http://download.geonames.org/export/dump/alternatenames/GB.zip
-
-use Database::Abstraction;
 
 our @ISA = ('Database::Abstraction');
 

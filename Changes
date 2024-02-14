@@ -2,6 +2,7 @@ Revision history for Locale::Places
 
 0.11
 	Move the database directory to data
+	Added t/version.t
 
 0.10	Mon Feb  5 09:01:00 EST 2024
 	Fix https://github.com/nigelhorne/Locale-Places/issues/6
