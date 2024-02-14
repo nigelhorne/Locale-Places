@@ -34,7 +34,7 @@ if(scalar(@countries)) {
 	$test_requires->{'autodie'} = 0;
 
 	my @dirs = (
-		'lib/Locale/Places/databases',
+		'lib/Locale/Places/data',
 	);
 
 	foreach my $dir(@dirs) {
@@ -46,7 +46,7 @@ if(scalar(@countries)) {
 
 	eval { require 'autodie' };
 
-	# unlink('lib/Locale/Places/databases/GB.sql');
+	# unlink('lib/Locale/Places/data/GB.sql');
 	if(eval { require HTTP::Cache::Transparent }) {
 		HTTP::Cache::Transparent->import();
 		my $cachedir;
@@ -90,7 +90,7 @@ if(scalar(@countries)) {
 
 	foreach my $country(@countries) {
 		my $url = "https://$site/export/dump/alternatenames/$country.zip";
-		my $file = "lib/Locale/Places/databases/$country.zip";
+		my $file = "lib/Locale/Places/data/$country.zip";
 
 		my $use_mirror = 0;
 
@@ -141,8 +141,8 @@ if(scalar(@countries)) {
 		}
 		die $file if(!-r $file);
 
-		if(!(-r "lib/Locale/Places/databases/$country.csv")) {
-			my $zip = "lib/Locale/Places/databases/$country.zip";
+		if(!(-r "lib/Locale/Places/data/$country.csv")) {
+			my $zip = "lib/Locale/Places/data/$country.zip";
 
 			print "Exploding $zip\n";
 
@@ -152,9 +152,9 @@ if(scalar(@countries)) {
 			if($@) {
 				system("unzip $zip") or die "unzip $zip failed";
 
-				rename "$country.txt", "lib/Locale/Places/databases/$country.csv" or die "rename: $!";
+				rename "$country.txt", "lib/Locale/Places/data/$country.csv" or die "rename: $!";
 				unlink 'readme.txt';
-			} elsif(open(my $fout, '>', "lib/Locale/Places/databases/$country.csv")) {
+			} elsif(open(my $fout, '>', "lib/Locale/Places/data/$country.csv")) {
 				IO::Uncompress::Unzip->import();
 				if(my $fin = IO::Uncompress::Unzip->new($zip)) {
 					do {
@@ -180,7 +180,7 @@ if(scalar(@countries)) {
 			truncate $zip, 0;
 		}
 
-		die if(!(-r "lib/Locale/Places/databases/$country.csv"));
+		die if(!(-r "lib/Locale/Places/data/$country.csv"));
 	}
 
 	# my $pm = {
@@ -190,9 +190,9 @@ if(scalar(@countries)) {
 	# };
 
 	# if($ENV{'AUTOMATED_TESTING'}) {
-		# $pm->{'lib/Locale/Places/databases/GB.csv'} = 'blib/lib/Locale/Places/databases/GB.csv';
+		# $pm->{'lib/Locale/Places/data/GB.csv'} = 'blib/lib/Locale/Places/data/GB.csv';
 	# } else {
-		# $pm->{'lib/Locale/Places/databases/GB.sql'} = 'blib/lib/Locale/Places/databases/GB.sql';
+		# $pm->{'lib/Locale/Places/data/GB.sql'} = 'blib/lib/Locale/Places/data/GB.sql';
 	# }
 
 	if($Config{'osname'} ne 'MSWin32') {

@@ -1,4 +1,4 @@
-package Locale::Places::Database::GB;
+package Locale::Places::US;
 
 use strict;
 use warnings;
@@ -15,7 +15,7 @@ use warnings;
 #	from		  : from period when the name was used
 #	to		  : to period when the name was used
 
-# GB.csv is from http://download.geonames.org/export/dump/alternatenames/GB.zip
+# US.csv is from http://download.geonames.org/export/dump/alternatenames/US.zip
 
 use Database::Abstraction;
 

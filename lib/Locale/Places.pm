@@ -9,8 +9,8 @@ use warnings;
 use Carp;
 use CHI;
 use File::Spec;
-use Locale::Places::Database::GB;
-use Locale::Places::Database::US;
+use Locale::Places::GB;
+use Locale::Places::US;
 use Module::Info;
 
 =encoding utf8
@@ -65,7 +65,7 @@ sub new {
 	$directory =~ s/\.pm$//;
 
 	Database::Abstraction::init({
-		directory => File::Spec->catfile($directory, 'databases'),
+		directory => File::Spec->catfile($directory, 'data'),
 		no_entry => 1,
 		cache => $args{cache} || CHI->new(driver => 'Memory', datastore => {}),
 		cache_duration => '1 week',
@@ -146,10 +146,10 @@ sub translate {
 	my $db;
 
 	if(defined($country) && ($country eq 'US')) {
-		$self->{'US'} ||= Locale::Places::Database::US->new();
+		$self->{'US'} ||= Locale::Places::US->new();
 		$db = $self->{'US'};
 	} else {
-		$self->{'GB'} ||= Locale::Places::Database::GB->new();
+		$self->{'GB'} ||= Locale::Places::GB->new();
 		$db = $self->{'GB'};
 	}
 
