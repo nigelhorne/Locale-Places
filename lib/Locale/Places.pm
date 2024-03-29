@@ -39,7 +39,7 @@ London is Londres in French.
 Create a Locale::Places object.
 
 Takes one optional parameter, directory,
-which tells the object where to find the file GB.sql
+which tells the object where to directory containing GB.sql and US.sql
 If that parameter isn't given,
 the module will attempt to find the databases,
 but that can't be guaranteed.
@@ -63,16 +63,17 @@ sub new {
 
 	my $directory = delete $args{'directory'} || Module::Info->new_from_loaded(__PACKAGE__)->file();
 	$directory =~ s/\.pm$//;
+	$directory = File::Spec->catfile($directory, 'data');
 
 	Database::Abstraction::init({
-		directory => File::Spec->catfile($directory, 'data'),
 		no_entry => 1,
 		cache => $args{cache} || CHI->new(driver => 'Memory', datastore => {}),
-		cache_duration => '1 week',
-		%args
+		cache_duration => $args{'cache_duration'} || '1 week',
+		%args,
+		directory => $directory
 	});
 
-	return bless { }, $class;
+	return bless { directory => $directory }, $class;
 }
 
 =head2 translate
@@ -146,10 +147,10 @@ sub translate {
 	my $db;
 
 	if(defined($country) && ($country eq 'US')) {
-		$self->{'US'} ||= Locale::Places::US->new();
+		$self->{'US'} ||= Locale::Places::US->new(directory => $self->{'directory'});
 		$db = $self->{'US'};
 	} else {
-		$self->{'GB'} ||= Locale::Places::GB->new();
+		$self->{'GB'} ||= Locale::Places::GB->new(directory => $self->{'directory'});
 		$db = $self->{'GB'};
 	}
 
