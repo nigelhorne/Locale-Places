@@ -18,7 +18,7 @@ jobs:
         os:
           - name: freebsd
             version: '13.0'
-            pkginstall: pkg install -y p5-ExtUtils-MakeMaker p5-DBI p5-IO-AIO p5-File-Which p5-Try-Tiny p5-DBD-CSV p5-IPC-System-Simple p5-common-sense p5-LWP-protocol-https p5-App-cpanminus p5-Moo p5-Log-Any p5-MooX-Types-MooseLike
+            pkginstall: pkg install -y p5-ExtUtils-MakeMaker p5-DBI p5-IO-AIO p5-File-Which p5-Try-Tiny p5-DBD-CSV p5-IPC-System-Simple p5-common-sense p5-LWP-protocol-https p5-App-cpanminus p5-Moo p5-Log-Any p5-MooX-Types-MooseLike p5-DBD-SQLite
           - name: openbsd
             version: '7.1'
             pkginstall: pkg_add p5-List-MoreUtils p5-DBI p5-IO-AIO p5-File-Which p5-Try-Tiny p5-DBD-CSV p5-IPC-System-Simple p5-common-sense p5-LWP-protocol-https p5-Moo p5-Log-Any p5-MooX-Types-MooseLike
@@ -37,7 +37,7 @@ jobs:
             sudo hostname example.com
             sudo ${{ matrix.os.pkginstall }}
             yes | sudo cpan -i App::cpanminus
-            sudo cpanm --skip-satisfied -iqn File::Copy File::Open::NoCache::ReadOnly IO::Uncompress::Unzip LWP::Simple CHI
+            sudo cpanm --skip-satisfied -iqn File::Copy File::Open::NoCache::ReadOnly IO::Uncompress::Unzip LWP::Simple CHI Database::Abstraction
             sudo chown -R runner:runner .
             curl -L https://cpanmin.us | sudo perl - --notest --installdeps --with-configure --with-develop .
             sudo chown -R runner:runner .
