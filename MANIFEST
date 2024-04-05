@@ -1,5 +1,5 @@
 bin/create_db.PL
-bin/translate.PL
+bin/translate
 Changes
 lib/Locale/Places.pm
 lib/Locale/Places/GB.pm
