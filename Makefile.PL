@@ -233,6 +233,7 @@ WriteMakefile(
 	},
 	dist		=> { COMPRESS => 'gzip -9f', SUFFIX => 'gz' },
 	clean		=> { FILES => 'Locale-Places-*' },
+	EXE_FILES => [ 'bin/weather' ],
 	# META_ADD => {
 		# provides => { }
 	# },
