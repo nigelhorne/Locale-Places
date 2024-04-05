@@ -231,9 +231,9 @@ WriteMakefile(
 		'Text::CSV' => 0,
 		'Text::xSV::Slurp' => 0,
 	},
-	dist		=> { COMPRESS => 'gzip -9f', SUFFIX => 'gz' },
-	clean		=> { FILES => 'Locale-Places-*' },
-	EXE_FILES => [ 'bin/weather' ],
+	dist	=> { COMPRESS => 'gzip -9f', SUFFIX => 'gz' },
+	clean	=> { FILES => 'Locale-Places-*' },
+	EXE_FILES	=> [ 'bin/translate' ],
 	# META_ADD => {
 		# provides => { }
 	# },
