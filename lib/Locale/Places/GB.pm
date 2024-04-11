@@ -10,11 +10,11 @@ Locale::Places::GB
 
 =head1 VERSION
 
-Version 0.10
+Version 0.11
 
 =cut
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 # From http://download.geonames.org/export/dump/readme.txt
 #	alternateNameId   : the id of this alternate name, int
