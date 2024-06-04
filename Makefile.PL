@@ -8,6 +8,14 @@ use IO::Socket::INET;
 
 my $site = 'download.geonames.org';
 
+# Test for broken smokers that don't set AUTOMATED_TESTING
+if(my $reporter = $ENV{'PERL_CPAN_REPORTER_CONFIG'}) {
+	if($reporter =~ /smoker/i) {
+		warn 'AUTOMATED_TESTING added for you';
+		$ENV{'AUTOMATED_TESTING'} = 1;
+	}
+}
+
 if(!IO::Socket::INET->new(PeerAddr => "$site:80", Timeout => 5)) {
 	print STDERR "NA: Can't connect to $site\n";
 	exit(0);
@@ -18,7 +26,7 @@ if(defined($ENV{'GITHUB_ACTION'}) || defined($ENV{'TRAVIS_PERL_VERSION'}) || def
 	$ENV{'AUTOMATED_TESTING'} = 1;
 }
 
-my @countries = ($ENV{'AUTOMATED_TESTING'} || $ENV{'NO NETWORK TESTING'}) ? () : ('GB', 'US');
+my @countries = ($ENV{'AUTOMATED_TESTING'} || $ENV{'NO_NETWORK_TESTING'}) ? () : ('GB', 'US');
 my $build_requires = {};
 my $test_requires = {
 	'Test::Carp' => 0,
