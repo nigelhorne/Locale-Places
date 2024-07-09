@@ -73,7 +73,7 @@ sub new {
 		directory => $directory
 	});
 
-	return bless { directory => $directory }, $class;
+	return bless { %args, directory => $directory }, $class;
 }
 
 =head2 translate
