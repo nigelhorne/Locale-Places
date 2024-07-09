@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+# FIXME: we shouldn't be downloading in the Makefile - move that to a script
+
 use strict;
 use warnings;
 use Config;
