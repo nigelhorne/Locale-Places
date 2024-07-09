@@ -304,6 +304,9 @@ This is a problem with the data, which has this line:
 
 which overrides the translation by setting the 'isPreferredName' flag
 
+Can't specify below country level.
+For example, is Virginia a state or a town in Illinois or one in Minnesota?
+
 =head1 SEE ALSO
 
 L<Locale::Country::Multilingual> to translate country names.
