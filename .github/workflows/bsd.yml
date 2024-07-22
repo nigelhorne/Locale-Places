@@ -17,10 +17,10 @@ jobs:
       matrix:
         os:
           - name: freebsd
-            version: '13.0'
+            version: '13.3'
             pkginstall: pkg install -y p5-ExtUtils-MakeMaker p5-DBI p5-IO-AIO p5-File-Which p5-Try-Tiny p5-DBD-CSV p5-IPC-System-Simple p5-common-sense p5-LWP-protocol-https p5-App-cpanminus p5-Moo p5-Log-Any p5-MooX-Types-MooseLike p5-DBD-SQLite
           - name: openbsd
-            version: '7.1'
+            version: '7.5'
             pkginstall: pkg_add p5-List-MoreUtils p5-DBI p5-IO-AIO p5-File-Which p5-Try-Tiny p5-DBD-CSV p5-IPC-System-Simple p5-common-sense p5-LWP-protocol-https p5-Moo p5-Log-Any p5-MooX-Types-MooseLike
 
     steps:
