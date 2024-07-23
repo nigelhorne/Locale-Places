@@ -75,6 +75,9 @@ foreach my $country('GB', 'US') {
 		$csv = undef;
 
 		flush($dbh, $table, $queue);
+
+		undef $queue;
+
 		$dbh->commit();
 		$dbh->disconnect();
 
@@ -124,6 +127,7 @@ sub flush($$$)
 	my $query;
 
 	while(my ($key, $value) = each (%{$queue})) {
+		delete $queue->{$key};
 		if(!defined($query)) {
 			$query = "INSERT INTO $table(code1, code2, type, data, ispreferredname, isshortname) VALUES (";
 		} else {
