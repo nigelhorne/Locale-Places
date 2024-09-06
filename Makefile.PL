@@ -25,6 +25,7 @@ if(!IO::Socket::INET->new(PeerAddr => "$site:80", Timeout => 5)) {
 
 if(defined($ENV{'GITHUB_ACTION'}) || defined($ENV{'CIRCLECI'}) || defined($ENV{'TRAVIS_PERL_VERSION'}) || defined($ENV{'APPVEYOR'})) {
 	# Prevent downloading and installing stuff
+	warn 'AUTOMATED_TESTING added for you' if(!defined($ENV{'AUTOMATED_TESTING'}));
 	$ENV{'AUTOMATED_TESTING'} = 1;
 }
 
