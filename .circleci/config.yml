@@ -34,7 +34,7 @@ jobs:
           command: sudo cpanm -iqn LWP::Simple
       - run:
           name: Install dependancies
-          command: sudo cpanm -ivn --installdeps .
+          command: sudo cpanm -iqn --installdeps .
           environment:
             # PATH: ~/perl5/bin:/bin:/usr/bin
             AUTOMATED_TESTING: 1
