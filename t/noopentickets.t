@@ -3,8 +3,8 @@
 use strict;
 use warnings;
 use Test::Most tests => 4;
-use constant SITE =>'https://api.github.com/repos/nigelhorne/Locale-Places/issues';
-use constant URL =>'api.github.com';
+use constant URL => 'https://api.github.com/repos/nigelhorne/Locale-Places/issues';
+use constant SITE =>'api.github.com';
 
 RT: {
 	# RT system, deprecated
@@ -15,8 +15,8 @@ RT: {
 				diag('WWW::RT::CPAN required to check for open tickets');
 				skip('WWW::RT::CPAN required to check for open tickets', 3);
 			} elsif(my @rc = @{WWW::RT::CPAN::list_dist_active_tickets(dist => 'Locale-Places')}) {
-				ok($rc[0] == 200);
-				ok($rc[1] eq 'OK');
+				cmp_ok($rc[0], '==', 200);
+				cmp_ok($rc[1], 'eq', 'OK');
 				my @tickets = $rc[2] ? @{$rc[2]} : ();
 
 				foreach my $ticket(@tickets) {
@@ -38,10 +38,10 @@ GITHUB: {
 	# https://docs.github.com/en/rest/reference/issues#list-repository-issues
 	SKIP: {
 		if($ENV{'AUTHOR_TESTING'}) {
-			eval 'use JSON';
+			eval 'use JSON::MaybeXS';
 			if($@) {
-				diag('JSON required to check for open tickets');
-				skip('JSON required to check for open tickets', 1);
+				diag('JSON::MaybeXS required to check for open tickets');
+				skip('JSON::MaybeXS required to check for open tickets', 1);
 			} else {
 				eval 'use IO::Socket::INET';
 				if($@) {
@@ -50,6 +50,7 @@ GITHUB: {
 				} else {
 					my $s = IO::Socket::INET->new(
 						PeerAddr => SITE,
+						PeerPort => 'http(80)',
 						Timeout => 5
 					);
 					if($s) {
@@ -59,7 +60,7 @@ GITHUB: {
 							diag('LWP::Simple required to check for open tickets');
 							skip('LWP::Simple required to check for open tickets', 1);
 						} elsif(my $data = LWP::Simple::get(URL)) {
-							my $json = JSON->new()->utf8();
+							my $json = JSON::MaybeXS->new()->utf8();
 							my @issues = @{$json->decode($data)};
 							# diag(Data::Dumper->new([\@issues])->Dump());
 							if($ENV{'TEST_VERBOSE'}) {
@@ -70,12 +71,13 @@ GITHUB: {
 							}
 							cmp_ok(scalar(@issues), '==', 0, 'There are no opentickets');
 						} else {
-							diag(URL, ': failed to get data');
-							fail('Failed to get data');
+							diag(URL, ': failed to get data - ignoring');
+							# fail('Failed to get data');
+							skip(URL . ': failed to get data - ignoring', 1);
 						}
 					} else {
-						diag("Can't connect to ", SITE);
-						skip("Can't connect to " . SITE, 1);
+						diag("Can't connect to ", SITE, ": $IO::Socket::errstr");
+						skip("Can't connect to " . SITE . ": $IO::Socket::errstr", 1);
 					}
 				}
 			}

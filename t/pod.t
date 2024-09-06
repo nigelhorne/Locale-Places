@@ -1,10 +1,10 @@
-#!perl -T
+#!perl -w
 
 use strict;
 use warnings;
 use Test::Most;
 
-if($ENV{AUTHOR_TESTING}) {
+if($ENV{'AUTHOR_TESTING'}) {
 	# Ensure a recent version of Test::Pod
 	my $min_tp = 1.22;
 	eval "use Test::Pod $min_tp";
