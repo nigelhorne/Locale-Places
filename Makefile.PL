@@ -15,21 +15,21 @@ if(my $reporter = $ENV{'PERL_CPAN_REPORTER_CONFIG'}) {
 	if($reporter =~ /smoker/i) {
 		warn 'AUTOMATED_TESTING added for you';
 		$ENV{'AUTOMATED_TESTING'} = 1;
+		$ENV{'NO_NETWORK_TESTING'} = 1;
 	}
 }
 
-if(!IO::Socket::INET->new(PeerAddr => "$site:80", Timeout => 5)) {
-	print STDERR "NA: Can't connect to $site\n";
-	exit(0);
-}
+my @countries;
 
 if(defined($ENV{'GITHUB_ACTION'}) || defined($ENV{'CIRCLECI'}) || defined($ENV{'TRAVIS_PERL_VERSION'}) || defined($ENV{'APPVEYOR'})) {
 	# Prevent downloading and installing stuff
 	warn 'AUTOMATED_TESTING added for you' if(!defined($ENV{'AUTOMATED_TESTING'}));
 	$ENV{'AUTOMATED_TESTING'} = 1;
+	$ENV{'NO_NETWORK_TESTING'} = 1;
+} else
+	my @countries = ($ENV{'AUTOMATED_TESTING'} || $ENV{'NO_NETWORK_TESTING'}) ? () : ('GB', 'US');
 }
 
-my @countries = ($ENV{'AUTOMATED_TESTING'} || $ENV{'NO_NETWORK_TESTING'}) ? () : ('GB', 'US');
 my $build_requires = {};
 my $test_requires = {
 	'Test::Carp' => 0,
@@ -38,6 +38,11 @@ my $test_requires = {
 };
 
 if(scalar(@countries)) {
+	if(!IO::Socket::INET->new(PeerAddr => "$site:80", Timeout => 5)) {
+		print STDERR "NA: Can't connect to $site\n";
+		exit(0);
+	}
+
 	$build_requires = {	# For bin/create_sqlite
 		'DBI' => 0,
 		'File::Copy' => 0,
