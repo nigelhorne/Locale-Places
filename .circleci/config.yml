@@ -21,7 +21,6 @@ jobs:
             sudo apt-get update && \
             sudo apt-get upgrade && \
             sudo apt-get install --assume-yes --quiet \
-              --no-install-suggests --no-install-recommends \
               perl cpanminus libtest-needs-perl libtest-most-perl
       - run:
           name: Perl version
@@ -34,7 +33,7 @@ jobs:
           command: sudo cpanm -iqn LWP::Simple
       - run:
           name: Install dependancies
-          command: sudo cpanm -iqn --installdeps .
+          command: sudo cpanm -ivn --installdeps . || cat /root/.cpan/work/*/build.log
           environment:
             # PATH: ~/perl5/bin:/bin:/usr/bin
             AUTOMATED_TESTING: 1
@@ -45,14 +44,12 @@ jobs:
           environment:
             # PATH: ~/perl5/bin:/bin:/usr/bin
             AUTOMATED_TESTING: 1
-            AUTHOR_TESTING: 1
             NO_NETWORK_TESTING: 1
       - run:
           name: Run tests
           environment:
             # PATH: ~/perl5/bin:/bin:/usr/bin
             AUTOMATED_TESTING: 1
-            AUTHOR_TESTING: 1
             NO_NETWORK_TESTING: 1
           # command: echo 'replace me with real tests!' && false
           command: |
