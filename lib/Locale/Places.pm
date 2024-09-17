@@ -48,8 +48,8 @@ Any other options are passed to the underlying database driver.
 =cut
 
 sub new {
-	my($proto, %args) = @_;
-	my $class = ref($proto) || $proto;
+	my $class = shift;
+	my %args = (ref($_[0]) eq 'HASH') ? %{$_[0]} : @_;
 
 	if(!defined($class)) {
 		# Locale::Places::new() used rather than Locale::Places->new()

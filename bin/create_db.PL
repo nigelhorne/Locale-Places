@@ -56,7 +56,7 @@ foreach my $country('GB', 'US') {
 	if($Config{'osname'} eq 'MSWin32') {
 		open($fin, '<', $csv);
 	} else {
-		$csv = File::Open::NoCache::ReadOnly->new($csv);
+		$csv = File::Open::NoCache::ReadOnly->new($csv) or die "$country: $!";
 		$fin = $csv->fd();
 		aio_readahead($fin, 0, AIO_READAHEAD_SIZE);
 	}
