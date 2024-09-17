@@ -21,7 +21,8 @@ jobs:
             sudo apt-get update && \
             sudo apt-get upgrade && \
             sudo apt-get install --assume-yes --quiet \
-              perl cpanminus libtest-needs-perl libtest-most-perl liblwp-protocol-https-perl
+              perl cpanminus libtest-needs-perl libtest-most-perl liblwp-protocol-https-perl \
+              build-essential libaio-dev libio-aio-perl
       - run:
           name: Perl version
           command: perl --version
