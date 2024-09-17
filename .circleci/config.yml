@@ -38,7 +38,7 @@ jobs:
             # PATH: ~/perl5/bin:/bin:/usr/bin
             AUTOMATED_TESTING: 1
             NO_NETWORK_TESTING: 1
-          command: sudo cpanm -ivn --installdeps . || sudo cat /root/.cpan/work/*/build.log
+          command: sudo cpanm -in --installdeps . || sudo cat /root/.cpan/work/*/build.log
       - run:
           name: Make Module
           environment:

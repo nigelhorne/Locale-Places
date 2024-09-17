@@ -34,7 +34,6 @@ jobs:
       - name: Install Dependencies
         env:
           AUTOMATED_TESTING: 1
-          AUTHOR_TESTING: 1
         run: |
           cpanm -iqn --skip-satisfied ExtUtils::PL2Bat File::Spec
           cpanm -iqn --skip-satisfied ExtUtils::MakeMaker LWP::Simple::WithCache LWP::Protocol::https
