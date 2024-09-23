@@ -33,9 +33,19 @@ if(defined($ENV{'GITHUB_ACTION'}) || defined($ENV{'CIRCLECI'}) || defined($ENV{'
 my $build_requires = {};
 my $test_requires = {
 	'Test::Carp' => 0,
+	'Test::DescribeMe' => 0,
 	'Test::Most' => 0,
 	'Test::Needs' => 0
 };
+
+my $dist = {
+	COMPRESS => 'gzip -9f',
+	SUFFIX => 'gz'
+};
+
+if($^O eq 'darwin') {
+	$dist->{'TAR'} = 'gtar';
+}
 
 if(scalar(@countries)) {
 	if(!IO::Socket::INET->new(PeerAddr => "$site:80", Timeout => 5)) {
@@ -246,8 +256,7 @@ WriteMakefile(
 		'Module::Info' => 0,
 		'Text::CSV' => 0,
 		'Text::xSV::Slurp' => 0,
-	},
-	dist	=> { COMPRESS => 'gzip -9f', SUFFIX => 'gz' },
+	}, dist => $dist,
 	clean	=> { FILES => 'Locale-Places-*' },
 	EXE_FILES	=> [ 'bin/translate' ],
 	# META_ADD => {
