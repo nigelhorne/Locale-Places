@@ -12,6 +12,7 @@ use File::Spec;
 use Locale::Places::GB;
 use Locale::Places::US;
 use Module::Info;
+use Scalar::Util;
 
 =encoding utf8
 
@@ -49,15 +50,19 @@ Any other options are passed to the underlying database driver.
 
 sub new {
 	my $class = shift;
+
+	# Handle hash or hashref arguments
 	my %args = (ref($_[0]) eq 'HASH') ? %{$_[0]} : @_;
 
 	if(!defined($class)) {
 		# Locale::Places::new() used rather than Locale::Places->new()
 		# carp(__PACKAGE__, ' use ->new() not ::new() to instantiate');
 		# return;
+
+		# FIXME: this only works when no arguments are given
 		$class = __PACKAGE__;
-	} elsif(ref($class)) {
-		# clone the given object
+	} elsif(Scalar::Util::blessed($class)) {
+		# If $class is an object, clone it with new arguments
 		return bless { %{$class}, %args }, ref($class);
 	}
 
@@ -73,6 +78,7 @@ sub new {
 		directory => $directory
 	});
 
+	# Return the blessed object
 	return bless { %args, directory => $directory }, $class;
 }
 

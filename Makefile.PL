@@ -38,15 +38,6 @@ my $test_requires = {
 	'Test::Needs' => 0
 };
 
-my $dist = {
-	COMPRESS => 'gzip -9f',
-	SUFFIX => 'gz'
-};
-
-if($^O eq 'darwin') {
-	$dist->{'TAR'} = 'gtar';
-}
-
 if(scalar(@countries)) {
 	if(!IO::Socket::INET->new(PeerAddr => "$site:80", Timeout => 5)) {
 		print STDERR "NA: Can't connect to $site\n";
@@ -227,6 +218,15 @@ if(scalar(@countries)) {
 	}
 }
 
+my $dist = {
+	COMPRESS => 'gzip -9f',
+	SUFFIX => 'gz'
+};
+
+if($^O eq 'darwin') {
+	$dist->{'TAR'} = 'gtar';
+}
+
 WriteMakefile(
 	NAME		=> 'Locale::Places',
 	AUTHOR		=> q{Nigel Horne <njh@bandsman.co.uk>},
@@ -254,8 +254,9 @@ WriteMakefile(
 		'File::pfopen' => 0,
 		'File::Spec' => 0,
 		'Module::Info' => 0,
+		'Scalar::Util' => 0,
 		'Text::CSV' => 0,
-		'Text::xSV::Slurp' => 0,
+		'Text::xSV::Slurp' => 0
 	}, dist => $dist,
 	clean	=> { FILES => 'Locale-Places-*' },
 	EXE_FILES	=> [ 'bin/translate' ],
