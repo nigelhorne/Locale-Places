@@ -275,13 +275,12 @@ Translate to the given language, where the routine's name will be the target lan
 sub AUTOLOAD
 {
 	our $AUTOLOAD;
-	my $to = $AUTOLOAD;
+	my $self = shift or return;
 
-	$to =~ s/.*:://;
+	# Extract the target language from the AUTOLOAD variable
+	my ($to) = $AUTOLOAD =~ /::(\w+)$/;
 
 	return if($to eq 'DESTROY');
-
-	my $self = shift or return;
 
 	my %params;
         if(ref($_[0]) eq 'HASH') {

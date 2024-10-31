@@ -19,6 +19,10 @@ BEGIN {
 	$SIG{__WARN__} = sub {
 		my $warning = shift;
 		if(($warning =~ /^Use of uninitialized value/) ||
+		   ($warning =~ /Wide/) ||
+		   ($warning =~ /masks earlier declaration in same scope/) ||
+		   ($warning =~ /: attempt to add consecutive punctuation/) ||
+		   ($warning =~ /^Odd number of elements in hash assignment/) ||
 		   ($warning =~ /isn't numeric in numeric eq /i)) {
 			die $warning;
 		}
