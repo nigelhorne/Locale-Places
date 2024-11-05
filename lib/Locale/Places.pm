@@ -105,60 +105,54 @@ which is the country of that 'place' is in.
 
 =cut
 
-sub translate {
+sub translate
+{
 	my $self = shift;
 
+	# Assign parameters based on input structure
 	my %params;
 	if(ref($_[0]) eq 'HASH') {
 		%params = %{$_[0]};
 	} elsif((scalar(@_) % 2) == 0) {
 		%params = @_;
 	} elsif(scalar(@_) == 1) {
-		$params{'place'} = shift;
-		$params{'from'} = 'en';
+		%params = (place => shift, from => 'en');
 	} else {
 		Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2 [ , country => $country ])');
 		return;
 	}
 
-	my $place = $params{'place'};
-	if(!defined($place)) {
+	my $place = $params{place};
+	unless(defined $place) {
 		Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2 [ , country => $country ])');
 		return;
 	}
 
-	my $to = $params{'to'};
-	my $from = $params{'from'};
-	if((!defined($from)) && !defined($to)) {
-		$to ||= $self->_get_language();
+	# Validate 'from' and 'to' languages
+	my $from = $params{from} || $self->_get_language();
+	my $to = $params{to} || $self->_get_language();
+	if(!defined($from)) {
 		if(!defined($to)) {
 			Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2 [ , country => $country ])');
 			return;
 		}
-	}
-
-	$from ||= $self->_get_language();
-	if(!defined($from)) {
 		Carp::carp(__PACKAGE__, ": can't work out which language to translate from");
 		return;
 	}
-	$to ||= $self->_get_language();
 	if(!defined($to)) {
 		Carp::carp(__PACKAGE__, ": can't work out which language to translate to");
 		return;
 	}
-	return $place if($to eq $from);
 
-	my $country = $params{'country'} || 'GB';
-	my $db;
+	# Return early if 'from' and 'to' languages are the same
+	return $place if $to eq $from;
 
-	if(defined($country) && ($country eq 'US')) {
-		$self->{'US'} ||= Locale::Places::US->new(directory => $self->{'directory'});
-		$db = $self->{'US'};
-	} else {
-		$self->{'GB'} ||= Locale::Places::GB->new(directory => $self->{'directory'});
-		$db = $self->{'GB'};
-	}
+	# Select database based on country, defaulting to GB
+	my $country = $params{country} || 'GB';
+	my $db = $self->{$country} ||= do {
+		my $class = "Locale::Places::$country";
+		$class->new(directory => $self->{directory});
+	};
 
 	# my @places = @{$db->selectall_hashref({ type => $from, data => $place, ispreferredname => 1 })};
 	# ::diag("$place: $from => $to");
@@ -261,7 +255,7 @@ sub _get_language
 	# if(defined($ENV{'LANG'}) && (($ENV{'LANG'} =~ /^C\./) || ($ENV{'LANG'} eq 'C'))) {
 		# return 'en';
 	# }
-	return 'en' if defined $ENV{'LANG'} && $ENV{'LANG'} =~ /^C(\.|$)/;
+	return 'en' if (defined $ENV{'LANG'}) && $ENV{'LANG'} =~ /^C(\.|$)/;
 	return;	# undef
 }
 
