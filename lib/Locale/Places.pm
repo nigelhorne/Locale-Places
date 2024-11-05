@@ -243,12 +243,12 @@ sub translate {
 
 # https://www.gnu.org/software/gettext/manual/html_node/Locale-Environment-Variables.html
 # https://www.gnu.org/software/gettext/manual/html_node/The-LANGUAGE-variable.html
-sub _get_language {
-	if($ENV{'LANGUAGE'}) {
-		if($ENV{'LANGUAGE'} =~ /^([a-z]{2})/i) {
-			return lc($1);
-		}
+sub _get_language
+{
+	if(($ENV{'LANGUAGE'}) && ($ENV{'LANGUAGE'} =~ /^([a-z]{2})/i)) {
+		return lc($1);
 	}
+
 	foreach my $variable('LC_ALL', 'LC_MESSAGES', 'LANG') {
 		my $val = $ENV{$variable};
 		next unless(defined($val));
@@ -257,9 +257,11 @@ sub _get_language {
 			return lc($1);
 		}
 	}
-	if(defined($ENV{'LANG'}) && (($ENV{'LANG'} =~ /^C\./) || ($ENV{'LANG'} eq 'C'))) {
-		return 'en';
-	}
+
+	# if(defined($ENV{'LANG'}) && (($ENV{'LANG'} =~ /^C\./) || ($ENV{'LANG'} eq 'C'))) {
+		# return 'en';
+	# }
+	return 'en' if defined $ENV{'LANG'} && $ENV{'LANG'} =~ /^C(\.|$)/;
 	return;	# undef
 }
 

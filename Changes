@@ -1,8 +1,10 @@
 Revision history for Locale::Places
 
 0.14
-	Test on CircleCI
 	Fix GitHub#9
+	Test on CircleCI
+	Use Test::DescribeMe to simplify tests
+	Use gtar to create a distribution on Macs
 
 0.13	Sun Jul 21 09:31:13 EDT 2024
 	Handle broken smokers
