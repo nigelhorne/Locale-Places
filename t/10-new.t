@@ -34,8 +34,13 @@ is($cloned_obj->{new_arg}, 'new_value', 'New arguments added to cloned object');
 
 # Test 5: Check if directory and cache are correctly set
 ok(defined($obj->{'directory'}), 'Directory path is set');
-if((!defined($ENV{'AUTOMATED_TESTING'})) && (!defined($ENV{'NO_NETWORK_TESTING'}))) {
-	ok(1, 'No data directory in automated testers');
-} else {
+if(defined($ENV{'GITHUB_ACTION'}) ||
+   defined($ENV{'CIRCLECI'}) ||
+   defined($ENV{'TRAVIS_PERL_VERSION'}) ||
+   defined($ENV{'APPVEYOR'}) ||
+   defined($ENV{'AUTOMATED_TESTING'}) ||
+   defined($ENV{'NO_NETWORK_TESTING'})) {
 	ok(-d $obj->{'directory'}, $obj->{'directory'} . ': Directory path exists or created');
+} else {
+	ok(1, 'No data directory in automated testers');
 }
