@@ -40,7 +40,7 @@ London is Londres in French.
 Create a Locale::Places object.
 
 Takes one optional parameter, directory,
-which tells the object where to directory containing GB.sql and US.sql
+which tells the object where to find a directory called 'data' containing GB.sql and US.sql
 If that parameter isn't given,
 the module will attempt to find the databases,
 but that can't be guaranteed.
@@ -91,7 +91,7 @@ It also takes two other arguments:
 at least one of which must be given.
 If neither $to nor $from is given,
 the code makes a best guess based on the environment.
-If no translation can be found, returns place in the original language.
+If no translation can be found, returns undef.
 Takes an optional argument 'country' which can be either GB (the default) or US
 which is the country of that 'place' is in.
 
