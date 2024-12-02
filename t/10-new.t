@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::Most tests => 14;
+use Test::Most tests => 15;
 
 use_ok('Locale::Places');
 isa_ok(Locale::Places->new(), 'Locale::Places', 'Creating Locale::Places object');
@@ -33,4 +33,5 @@ is($cloned_obj->{another_arg}, 'example', 'Cloned object retains old arguments')
 is($cloned_obj->{new_arg}, 'new_value', 'New arguments added to cloned object');
 
 # Test 5: Check if directory and cache are correctly set
-ok(-d $obj->{directory}, 'Directory path exists or created');
+ok(defined($obj->{'directory'}), 'Directory path is set');
+ok(-d $obj->{'directory'}, 'Directory path exists or created');

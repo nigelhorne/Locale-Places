@@ -4,8 +4,14 @@ use strict;
 use warnings;
 
 use File::Spec;
-use Test::Most tests => 4;
+use Test::Most;
 use Locale::Places;
+
+if((!defined($ENV{'AUTOMATED_TESTING'}) && (!defined($ENV{'NO_NETWORK_TESTING'})) && (-d 'lib/Locale/Places/data'))) {
+	plan tests => 4;
+} else {
+	plan skip_all => 'Not testing live data';
+}
 
 subtest 'Instantiation' => sub {
 	my $places = new_ok('Locale::Places');
