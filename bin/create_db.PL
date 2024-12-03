@@ -51,61 +51,6 @@ if($Config{'osname'} ne 'MSWin32') {
 my $dir = 'lib/Locale/Places/data';
 
 # Process countries
-foreach my $country('GB', 'US') {
-	next;	# Don't run legacy code
-	my $csv = File::Spec->catdir($dir, "$country.csv");
-	my $sqlite = File::Spec->catdir($dir, "$country.sql");
-
-	# Skip processing if SQLite file is valid and up to date
-	if((-r $sqlite) && !$force_flag) {
-		if((-s $sqlite) > 0) {	# Non empty?
-			# Don't bother building if the SQL file is less than a day old
-			next if(-M $sqlite < 1);
-			# Don't bother building if the SQL file is newer than the CSV file
-			next if((-M $sqlite) >= (-M $csv));
-		}
-		unlink $sqlite;
-	}
-
-	print "Building $sqlite\n";
-
-	my $fin;
-	if($Config{'osname'} eq 'MSWin32') {
-		open($fin, '<', $csv);
-	} else {
-		$csv = File::Open::NoCache::ReadOnly->new($csv) or die "$country: $!";
-		$fin = $csv->fd();
-		aio_readahead($fin, 0, AIO_READAHEAD_SIZE);
-	}
-
-	if(my $dbh = DBI->connect("dbi:SQLite:dbname=$sqlite", undef, undef, { RaiseError => 1, AutoCommit => 0, synchronous => 0, locking_mode => 'EXCLUSIVE' })) {
-		my $table = lc($country);
-		$dbh->do("DROP TABLE $table");
-		$dbh->do("CREATE TABLE $table(code1 INTEGER, code2 INTEGER, type VARCHAR(4), data VARCHAR NOT NULL, ispreferredname BIT, isshortname BIT)");
-		# keys
-		# if($place = $self->{$table}->fetchrow_hashref({ type => $from, data => $place })) {
-			# if(my $line = $self->{$table}->fetchrow_hashref({ type => $to, code2 => $place->{'code2'} })) {
-		$dbh->do('PRAGMA cache_size = -65536');	# 64MB
-		$dbh->do('PRAGMA journal_mode = OFF');
-
-		my $queue = doit($dbh, $fin);
-
-		$csv = undef;
-
-		flush($dbh, $table, $queue);
-
-		undef $queue;
-
-		$dbh->commit();
-		$dbh->disconnect();
-
-		File::Copy::copy($sqlite, File::Spec->catfile('blib', $sqlite));
-	} else {
-		die "$sqlite: $!";
-	}
-}
-
-# Process countries
 foreach my $country ('GB', 'US') {
 	process_country($country);
 }
