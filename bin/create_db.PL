@@ -174,6 +174,10 @@ sub doit($$) {
 			$queue{$code1}->{'isshortname'} = $isshortname;
 		}
 	}
+	if(scalar(keys(%queue)) == 0) {
+		die 'No entries found in the file';
+	}
+	print scalar(keys %queue), " entries to be added\n";
 	return \%queue;
 }
 
