@@ -121,7 +121,7 @@ sub open_csv {
 sub initialize_database {
 	my ($dbh, $table) = @_;
 
-	$dbh->do("DROP TABLE $table");
+	$dbh->do("DROP TABLE IF EXISTS $table");
 	$dbh->do(qq{
 		CREATE TABLE $table (
 			code1 INTEGER,
