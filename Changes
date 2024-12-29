@@ -7,6 +7,7 @@ Revision history for Locale::Places
 	Use gtar to create a distribution on Macs
 	Refactor main loop of bin/create_db.PL for readability
 	Added -f to bin/create_db.PL
+	Have a go at handling multiple translations if they are the same
 
 0.13	Sun Jul 21 09:31:13 EDT 2024
 	Handle broken smokers

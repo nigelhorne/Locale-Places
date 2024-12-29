@@ -55,9 +55,11 @@ sub new {
 	my %args = (ref($_[0]) eq 'HASH') ? %{$_[0]} : @_;
 
 	if(!defined($class)) {
-		# Locale::Places::new() used rather than Locale::Places->new()
-		# carp(__PACKAGE__, ' use ->new() not ::new() to instantiate');
-		# return;
+		if((scalar keys %args) > 0) {
+			# Locale::Places::new() used rather than Locale::Places->new()
+			carp(__PACKAGE__, ' use ->new() not ::new() to instantiate');
+			return;
+		}
 
 		# FIXME: this only works when no arguments are given
 		$class = __PACKAGE__;
@@ -85,29 +87,31 @@ sub new {
 =head2 translate
 
 Translate a city into a different language.
-Takes one mandatory argument: 'place'.
-It also takes two other arguments:
-'from' and 'to',
-at least one of which must be given.
-If neither $to nor $from is given,
-the code makes a best guess based on the environment.
-If no translation can be found, returns undef.
-Takes an optional argument 'country' which can be either GB (the default) or US
-which is the country of that 'place' is in.
 
-   use Locale::Places;
+Parameters:
+- place (mandatory): The name of the place to translate.
+- from: The source language (optional; defaults to environment language).
+- to: The target language (mandatory).
+- country: The country where the place is located (optional; defaults to 'GB').
 
-   # Prints "Douvres"
-   print Locale::Places->new()->translate({ place => 'Dover', country => 'GB', from => 'en', to => 'fr' });
+Returns:
+- Translated name if found, or undef if no translation exists.
 
-   # Prints "Douvres" if we're working on a French system
-   print Locale::Places->new()->translate('Dover');
+Example:
+    use Locale::Places;
+
+    # Prints "Douvres"
+    print Locale::Places->new()->translate({ place => 'Dover', country => 'GB', from => 'en', to => 'fr' });
+
 
 =cut
 
 sub translate
 {
 	my $self = shift;
+
+	# Ensure $self is valid
+	Carp::croak('translate() must be called on an object') unless Scalar::Util::blessed($self);
 
 	# Assign parameters based on input structure
 	my %params;
@@ -219,6 +223,16 @@ sub translate
 			   (my $data = $db->data({ type => $to, code2 => $places[0] }))) {
 				return $data;
 			}
+		} else {
+			# Handle multiple translations - see if they happen to be the same
+			my %translations;
+			foreach my $entry (@places) {
+				my $data = $db->data({ type => $to, code2 => $entry });
+				$translations{$data}++ if(defined $data);
+			}
+			if(keys(%translations) == 1) {
+				return (keys %translations)[0];
+			}
 		}
 		# foreach (@places) {
 			# if(my $data = $db->data({ type => $to, code2 => $_ })) {
@@ -232,9 +246,10 @@ sub translate
 			# }
 		# }
 	}
-	return;	# undef
+	return; # Return undef if no translation found
 }
 
+# Determine the current environment's default language.
 # https://www.gnu.org/software/gettext/manual/html_node/Locale-Environment-Variables.html
 # https://www.gnu.org/software/gettext/manual/html_node/The-LANGUAGE-variable.html
 sub _get_language
