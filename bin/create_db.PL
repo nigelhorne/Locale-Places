@@ -33,10 +33,13 @@ BEGIN {
 	}
 }
 
+my $dir = 'lib/Locale/Places/data';
+
 my $force_flag;
 if(defined($ARGV[0]) && ($ARGV[0] eq '-f')) {
 	$force_flag++;
 } elsif($ENV{'AUTOMATED_TESTING'}) {
+	rmdir $dir;
 	exit(0);
 }
 
@@ -47,8 +50,6 @@ if($Config{'osname'} ne 'MSWin32') {
 	require File::Open::NoCache::ReadOnly;
 	File::Open::NoCache::ReadOnly->import();
 }
-
-my $dir = 'lib/Locale/Places/data';
 
 # Process countries
 foreach my $country ('GB', 'US') {
