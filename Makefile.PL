@@ -8,7 +8,7 @@ use Config;
 use ExtUtils::MakeMaker;
 use IO::Socket::INET;
 
-my $site = 'download.geonames.org';
+my $site;
 
 # Test for broken smokers that don't set AUTOMATED_TESTING
 if(my $reporter = $ENV{'PERL_CPAN_REPORTER_CONFIG'}) {
@@ -27,6 +27,7 @@ if(defined($ENV{'GITHUB_ACTION'}) || defined($ENV{'CIRCLECI'}) || defined($ENV{'
 	$ENV{'AUTOMATED_TESTING'} = 1;
 	$ENV{'NO_NETWORK_TESTING'} = 1;
 } elsif((!defined($ENV{'AUTOMATED_TESTING'})) && (!defined($ENV{'NO_NETWORK_TESTING'}))) {
+	$site = 'download.geonames.org';
 	@countries = ('GB', 'US');
 }
 
