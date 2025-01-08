@@ -58,7 +58,7 @@ if(scalar(@countries)) {
 	foreach my $dir(@dirs) {
 		if(! -d $dir) {
 			print "Creating the download directory $dir\n";
-			mkdir $dir || die "$dir: $@";
+			mkdir $dir || die "$dir: $!";
 		}
 	}
 
@@ -80,7 +80,7 @@ if(scalar(@countries)) {
 
 		if(!-d $cache_dir) {
 			print "Creating the cache directory $cache_dir\n";
-			mkdir $cache_dir, 02755 || die "$cache_dir: $@";
+			mkdir $cache_dir, 02755 || die "$cache_dir: $!";
 		}
 		HTTP::Cache::Transparent::init({
 			BasePath => $cache_dir,
@@ -226,7 +226,10 @@ if(scalar(@countries)) {
 	foreach my $dir(@dirs) {
 		if(-d $dir) {
 			print "Removing the download directory $dir\n";
-			rmdir $dir || die "$dir: $@";
+			while(my $file = glob("$dir/*")) {
+				unlink $file || die "$file: $!";
+			}
+			rmdir $dir || die "$dir: $!";
 		}
 	}
 }
