@@ -26,8 +26,8 @@ if(defined($ENV{'GITHUB_ACTION'}) || defined($ENV{'CIRCLECI'}) || defined($ENV{'
 	warn 'AUTOMATED_TESTING added for you' if(!defined($ENV{'AUTOMATED_TESTING'}));
 	$ENV{'AUTOMATED_TESTING'} = 1;
 	$ENV{'NO_NETWORK_TESTING'} = 1;
-} else {
-	@countries = ($ENV{'AUTOMATED_TESTING'} || $ENV{'NO_NETWORK_TESTING'}) ? () : ('GB', 'US');
+} elsif((!defined($ENV{'AUTOMATED_TESTING'})) && (!defined($ENV{'NO_NETWORK_TESTING'}))) {
+	@countries = ('GB', 'US');
 }
 
 my $build_requires = {};
