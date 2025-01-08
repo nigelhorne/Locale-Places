@@ -41,7 +41,7 @@ if(defined($ENV{'GITHUB_ACTION'}) ||
    defined($ENV{'APPVEYOR'}) ||
    defined($ENV{'AUTOMATED_TESTING'}) ||
    defined($ENV{'NO_NETWORK_TESTING'})) {
-	ok(!-d $obj->{'directory'}, $obj->{'directory'} . ': No data directory in automated testers');
+	ok((!-d $obj->{'directory'}), $obj->{'directory'} . ': No data directory in automated testers');
 } else {
 	ok(-d $obj->{'directory'}, $obj->{'directory'} . ': Directory path exists or created');
 }

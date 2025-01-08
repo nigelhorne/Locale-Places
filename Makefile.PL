@@ -217,7 +217,9 @@ if(scalar(@countries)) {
 		$build_requires->{'IO::AIO'} = 0;
 	}
 } else {
+	# Remove the data directory on smokers
 	rmdir 'lib/Locale/Places/data';
+	rmdir 'blib/lib/Locale/Places/data';
 }
 
 my $dist = {
