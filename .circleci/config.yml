@@ -45,7 +45,7 @@ jobs:
             # PATH: ~/perl5/bin:/bin:/usr/bin
             AUTOMATED_TESTING: 1
             NO_NETWORK_TESTING: 1
-          command: sudo chown -R circleci . && perl Makefile.PL && make
+          command: sudo chown -R circleci . && perl Makefile.PL && env && make
       - run:
           name: Run tests
           environment:
