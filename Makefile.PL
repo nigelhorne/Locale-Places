@@ -218,7 +218,7 @@ if(scalar(@countries)) {
 		$build_requires->{'IO::AIO'} = 0;
 	}
 } else {
-	# Remove the data directory on smokers
+	# Remove the data directory on smokers, CircleCI in particular can leave some around
 	my @dirs = (
 		'lib/Locale/Places/data',
 		'blib/lib/Locale/Places/data',
