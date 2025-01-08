@@ -39,7 +39,6 @@ my $force_flag;
 if(defined($ARGV[0]) && ($ARGV[0] eq '-f')) {
 	$force_flag++;
 } elsif($ENV{'AUTOMATED_TESTING'}) {
-	rmdir $dir;
 	exit(0);
 }
 

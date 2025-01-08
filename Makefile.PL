@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Config;
-use ExtUtils::MakeMaker 6.64;	# 6.64 for TEST_REQUIRES
+use ExtUtils::MakeMaker;
 use IO::Socket::INET;
 
 my $site = 'download.geonames.org';
@@ -216,6 +216,8 @@ if(scalar(@countries)) {
 		$build_requires->{'File::Open::NoCache::ReadOnly'} = 0;
 		$build_requires->{'IO::AIO'} = 0;
 	}
+} else {
+	rmdir 'lib/Locale/Places/data';
 }
 
 my $dist = {
@@ -245,6 +247,7 @@ WriteMakefile(
 	}, TEST_REQUIRES => $test_requires,
 	PREREQ_PM => {
 		'CHI' => 0,
+		'ExtUtils::MakeMaker' => 6.64,	# 6.64 for TEST_REQUIRES
 		'Database::Abstraction' => 0.04,
 		'DBI' => 0,
 		'DBD::CSV' => 0,
