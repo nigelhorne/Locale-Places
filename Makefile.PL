@@ -219,8 +219,16 @@ if(scalar(@countries)) {
 	}
 } else {
 	# Remove the data directory on smokers
-	rmdir 'lib/Locale/Places/data';
-	rmdir 'blib/lib/Locale/Places/data';
+	my @dirs = (
+		'lib/Locale/Places/data',
+		'blib/lib/Locale/Places/data',
+	);
+	foreach my $dir(@dirs) {
+		if(-d $dir) {
+			print "Removing the download directory $dir\n";
+			rmdir $dir || die "$dir: $@";
+		}
+	}
 }
 
 my $dist = {
