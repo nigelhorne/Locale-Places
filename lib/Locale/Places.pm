@@ -30,8 +30,9 @@ our $VERSION = '0.14';
 
 =head1 SYNOPSIS
 
-Translates places between different languages, for example
-London is Londres in French.
+Provides the functionality for translating place names between different languages using data from GeoNames.
+It currently supports places in Great Britain (GB) and the United States (US) and relies on localized databases.
+For example, London is Londres in French.
 
 =head1 METHODS
 
@@ -72,16 +73,21 @@ sub new {
 	$directory =~ s/\.pm$//;
 	$directory = File::Spec->catfile($directory, 'data');
 
+	$args{'cache'} ||= CHI->new(driver => 'Memory', datastore => {}, expires_in => $args{'cache_duration'} || '1 week');
+
 	Database::Abstraction::init({
 		no_entry => 1,
-		cache => $args{cache} || CHI->new(driver => 'Memory', datastore => {}),
+		cache => $args{cache},
 		cache_duration => $args{'cache_duration'} || '1 week',
 		%args,
 		directory => $directory
 	});
 
 	# Return the blessed object
-	return bless { %args, directory => $directory }, $class;
+	return bless {
+		%args,
+		directory => $directory
+	}, $class;
 }
 
 =head2 translate
@@ -149,10 +155,16 @@ sub translate
 	}
 
 	# Return early if 'from' and 'to' languages are the same
-	return $place if $to eq $from;
+	return $place if($to eq $from);
 
 	# Select database based on country, defaulting to GB
 	my $country = $params{country} || 'GB';
+
+	my $cache_key = join('|', $place, $from, $to, $country);
+	if(my $cached_result = $self->{cache}->get($cache_key)) {
+		return $cached_result;
+	}
+
 	my $db = $self->{$country} ||= do {
 		my $class = "Locale::Places::$country";
 		$class->new(directory => $self->{directory});
@@ -172,6 +184,7 @@ sub translate
 		if(my $data = $db->data({ type => $to, code2 => $places[0] })) {
 		# if(my $data = $db->data({ type => $to, code2 => $places[0]->{'code2'} })) {
 			# ::diag(__LINE__, ": $places[0]: $data");
+			$self->{cache}->set($cache_key, $data);
 			return $data;
 		}
 	} elsif(scalar(@places) > 1) {
@@ -202,25 +215,30 @@ sub translate
 		@places = $db->code2({ type => $from, data => $place, ispreferredname => 1, isshortname => undef });
 		if(scalar(@places) == 1) {
 			if(my $data = $db->data({ type => $to, code2 => $places[0] })) {
+				$self->{cache}->set($cache_key, $data);
 				return $data;
 			}
 			@places = $db->code2({ type => $from, data => $place, ispreferredname => 1, isshortname => 1 });
 			if(scalar(@places) == 1) {
 				if(my $data = $db->data({ type => $to, code2 => $places[0] })) {
+					$self->{cache}->set($cache_key, $data);
 					return $data;
 				}
 				# Can't find anything
+				$self->{cache}->set($cache_key, $place);
 				return $place;
 			}
 		} elsif(scalar(@places) == 0) {
 			@places = $db->code2({ type => $from, data => $place, isshortname => undef });
 			if((scalar(@places) == 1) &&
 			   (my $data = $db->data({ type => $to, code2 => $places[0] }))) {
+				$self->{cache}->set($cache_key, $data);
 				return $data;
 			}
 			@places = $db->code2({ type => $from, data => $place });
 			if((scalar(@places) == 1) &&
 			   (my $data = $db->data({ type => $to, code2 => $places[0] }))) {
+				$self->{cache}->set($cache_key, $data);
 				return $data;
 			}
 		} else {
@@ -246,10 +264,13 @@ sub translate
 			# }
 		# }
 	}
-	return; # Return undef if no translation found
+	return; # Return undef if no translation is found
 }
 
-# Determine the current environment's default language.
+#Determines the system's default language using environment variables:
+# 'LANGUAGE', 'LC_ALL', 'LC_MESSAGES', $ENV{'LANG'}.
+# Defaults to English ('en') if no valid language is found.
+
 # https://www.gnu.org/software/gettext/manual/html_node/Locale-Environment-Variables.html
 # https://www.gnu.org/software/gettext/manual/html_node/The-LANGUAGE-variable.html
 sub _get_language
@@ -280,6 +301,8 @@ Translate to the given language, where the routine's name will be the target lan
 
     # Prints 'Virginie', since that's Virginia in French
     print $places->fr({ place => 'Virginia', from => 'en', country => 'US' });
+
+Extracts the target language from the method name and calls C<translate()> internally.
 
 =cut
 
@@ -320,8 +343,8 @@ This is a problem with the data, which has this line:
 
 which overrides the translation by setting the 'isPreferredName' flag
 
-Can't specify below country level.
-For example, is Virginia a state or a town in Illinois or one in Minnesota?
+Can't specify below the country level.
+For example, is Virginia a state, a town in Illinois or one in Minnesota?
 
 =head1 SEE ALSO
 

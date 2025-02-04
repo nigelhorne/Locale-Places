@@ -8,8 +8,9 @@ Version 0.14
 
 # SYNOPSIS
 
-Translates places between different languages, for example
-London is Londres in French.
+Provides the functionality for translating place names between different languages using data from GeoNames.
+It currently supports places in Great Britain (GB) and the United States (US) and relies on localized databases.
+For example, London is Londres in French.
 
 # METHODS
 
@@ -50,6 +51,8 @@ Translate to the given language, where the routine's name will be the target lan
     # Prints 'Virginie', since that's Virginia in French
     print $places->fr({ place => 'Virginia', from => 'en', country => 'US' });
 
+Extracts the target language from the method name and calls `translate()` internally.
+
 # AUTHOR
 
 Nigel Horne, `<njh at bandsman.co.uk>`
@@ -65,8 +68,8 @@ This is a problem with the data, which has this line:
 
 which overrides the translation by setting the 'isPreferredName' flag
 
-Can't specify below country level.
-For example, is Virginia a state or a town in Illinois or one in Minnesota?
+Can't specify below the country level.
+For example, is Virginia a state, a town in Illinois or one in Minnesota?
 
 # SEE ALSO
 
