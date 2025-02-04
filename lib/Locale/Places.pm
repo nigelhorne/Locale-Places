@@ -73,7 +73,7 @@ sub new {
 	$directory =~ s/\.pm$//;
 	$directory = File::Spec->catfile($directory, 'data');
 
-	$args{'cache'} ||= CHI->new(driver => 'Memory', datastore => {}, expires_in => $args{'cache_duration'} || '1 week');
+	$args{'cache'} ||= CHI->new(driver => 'Memory', datastore => {}, expires_in => $args{'cache_duration'} || $args{'expires_in'} || '1 day');
 
 	Database::Abstraction::init({
 		no_entry => 1,
