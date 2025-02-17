@@ -117,7 +117,7 @@ sub translate
 	my $self = shift;
 
 	# Ensure $self is valid
-	Carp::croak('translate() must be called on an object') unless Scalar::Util::blessed($self);
+	Carp::croak('translate() must be called on an object') unless(Scalar::Util::blessed($self));
 
 	# Assign parameters based on input structure
 	my %params;
