@@ -77,10 +77,10 @@ sub new {
 	my $class = shift;
 
 	# Handle hash or hashref arguments
-	my %args = (ref($_[0]) eq 'HASH') ? %{$_[0]} : @_;
+	my $params = Params::Get::get_params(undef, @_);
 
 	if(!defined($class)) {
-		if((scalar keys %args) > 0) {
+		if((scalar keys %{$params}) > 0) {
 			# Locale::Places::new() used rather than Locale::Places->new()
 			carp(__PACKAGE__, ' use ->new() not ::new() to instantiate');
 			return;
@@ -90,20 +90,23 @@ sub new {
 		$class = __PACKAGE__;
 	} elsif(Scalar::Util::blessed($class)) {
 		# If $class is an object, clone it with new arguments
-		return bless { %{$class}, %args }, ref($class);
+		if($params) {
+			return bless { %{$class}, %{$params} }, ref($class);
+		}
+		return bless $class, ref($class);
 	}
 
 	# Load the configuration from a config file, if provided
 	my $config;
-	if(exists($args{'config_file'}) && ($config = Config::Abstraction->new(config_dirs => ['/'], config_file => $args{'config_file'}, env_prefix => "${class}::")->all())) {
-		# my $config = YAML::XS::LoadFile($args{'config_file'});
+	if(exists($params->{'config_file'}) && ($config = Config::Abstraction->new(config_dirs => ['/'], config_file => $params->{'config_file'}, env_prefix => "${class}::")->all())) {
+		# my $config = YAML::XS::LoadFile($params->{'config_file'});
 		if($config->{$class}) {
 			$config = $config->{$class};
 		}
-		%args = ( %{$config}, %args );
+		$params = { %{$config}, %{$params} };
 	}
 
-	my $directory = delete $args{'directory'};
+	my $directory = delete $params->{'directory'};
 	if(!defined($directory)) {
 		if($config && $config->{'directory'}) {
 			$directory = $config->{'directory'};
@@ -119,19 +122,19 @@ sub new {
 		return;
 	}
 
-	$args{'cache'} ||= CHI->new(driver => 'Memory', datastore => {}, expires_in => $args{'cache_duration'} || $args{'expires_in'} || '1 hour');
+	$params->{'cache'} ||= CHI->new(driver => 'Memory', datastore => {}, expires_in => $params->{'cache_duration'} || $params->{'expires_in'} || '1 hour');
 
 	Database::Abstraction::init({
 		no_entry => 1,
-		cache => $args{cache},
-		cache_duration => $args{'cache_duration'} || '1 week',
-		%args,
+		cache => $params->{cache},
+		cache_duration => $params->{'cache_duration'} || '1 week',
+		%{$params},
 		directory => $directory
 	});
 
 	# Return the blessed object
 	return bless {
-		%args,
+		%{$params},
 		directory => $directory
 	}, $class;
 }
