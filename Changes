@@ -5,6 +5,8 @@ Revision history for Locale::Places
 	Workaround for broken smokers not setting AUTOMATED_TESTING
 		e.g. https://www.cpantesters.org/cpan/report/2eb340a6-cf21-11ef-8d4e-4e106e8775ea
 	Fix AUTOLOAD
+	Allow runtime configuration from a file
+	Better checking of the directory argument
 
 0.14	Wed Jan  8 17:25:41 EST 2025
 	Fix GitHub#9

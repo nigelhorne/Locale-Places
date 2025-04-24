@@ -8,6 +8,7 @@ use warnings;
 
 use Carp;
 use CHI;
+use Config::Abstraction;
 use File::Spec;
 use Locale::Places::GB;
 use Locale::Places::US;
@@ -52,6 +53,13 @@ Takes different argument formats (hash or positional)
 Place to store results.
 If none is given, the results will be stored in a temporary internal cache.
 
+=item * C<config_file>
+
+Points to a configuration file which contains the parameters to C<new()>.
+The file can be in any common format,
+including C<YAML>, C<XML>, and C<INI>.
+This allows the parameters to be set at run time.
+
 =item * C<directory>
 
 Tells the object where to find a directory called 'data' containing GB.sql and US.sql
@@ -85,9 +93,31 @@ sub new {
 		return bless { %{$class}, %args }, ref($class);
 	}
 
-	my $directory = delete $args{'directory'} || Module::Info->new_from_loaded(__PACKAGE__)->file();
-	$directory =~ s/\.pm$//;
+	# Load the configuration from a config file, if provided
+	my $config;
+	if(exists($args{'config_file'}) && ($config = Config::Abstraction->new(config_dirs => ['/'], config_file => $args{'config_file'}, env_prefix => "${class}::")->all())) {
+		# my $config = YAML::XS::LoadFile($args{'config_file'});
+		if($config->{$class}) {
+			$config = $config->{$class};
+		}
+		%args = ( %{$config}, %args );
+	}
+
+	my $directory = delete $args{'directory'};
+	if(!defined($directory)) {
+		if($config && $config->{'directory'}) {
+			$directory = $config->{'directory'};
+		} else {
+			$directory = Module::Info->new_from_loaded(__PACKAGE__)->file();
+			$directory =~ s/\.pm$//;
+		}
+	}
 	$directory = File::Spec->catfile($directory, 'data');
+
+	if(!-d $directory) {
+		Carp::carp("$class: can't read $directory");
+		return;
+	}
 
 	$args{'cache'} ||= CHI->new(driver => 'Memory', datastore => {}, expires_in => $args{'cache_duration'} || $args{'expires_in'} || '1 hour');
 
