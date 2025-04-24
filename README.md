@@ -18,11 +18,22 @@ For example, London is Londres in French.
 
 Create a Locale::Places object.
 
-Takes one optional parameter, directory,
-which tells the object where to find a directory called 'data' containing GB.sql and US.sql
-If that parameter isn't given,
-the module will attempt to find the databases,
-but that can't be guaranteed.
+Arguments:
+
+Takes different argument formats (hash or positional)
+
+- `cache`
+
+    Place to store results.
+    If none is given, the results will be stored in a temporary internal cache.
+
+- `directory`
+
+    Tells the object where to find a directory called 'data' containing GB.sql and US.sql
+    If that parameter isn't given,
+    the module will attempt to find the databases,
+    but that can't be guaranteed.
+
 Any other options are passed to the underlying database driver.
 
 ## translate

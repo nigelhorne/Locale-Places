@@ -271,6 +271,7 @@ WriteMakefile(
 		'File::pfopen' => 0,
 		'File::Spec' => 0,
 		'Module::Info' => 0,
+		'Params::Get' => 0,
 		'Scalar::Util' => 0,
 		'Text::CSV' => 0,
 		'Text::xSV::Slurp' => 0

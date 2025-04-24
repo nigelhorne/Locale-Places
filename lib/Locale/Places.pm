@@ -12,6 +12,7 @@ use File::Spec;
 use Locale::Places::GB;
 use Locale::Places::US;
 use Module::Info;
+use Params::Get;
 use Scalar::Util;
 
 =encoding utf8
@@ -40,11 +41,26 @@ For example, London is Londres in French.
 
 Create a Locale::Places object.
 
-Takes one optional parameter, directory,
-which tells the object where to find a directory called 'data' containing GB.sql and US.sql
+Arguments:
+
+Takes different argument formats (hash or positional)
+
+=over 4
+
+=item * C<cache>
+
+Place to store results.
+If none is given, the results will be stored in a temporary internal cache.
+
+=item * C<directory>
+
+Tells the object where to find a directory called 'data' containing GB.sql and US.sql
 If that parameter isn't given,
 the module will attempt to find the databases,
 but that can't be guaranteed.
+
+=back
+
 Any other options are passed to the underlying database driver.
 
 =cut
@@ -73,7 +89,7 @@ sub new {
 	$directory =~ s/\.pm$//;
 	$directory = File::Spec->catfile($directory, 'data');
 
-	$args{'cache'} ||= CHI->new(driver => 'Memory', datastore => {}, expires_in => $args{'cache_duration'} || $args{'expires_in'} || '1 day');
+	$args{'cache'} ||= CHI->new(driver => 'Memory', datastore => {}, expires_in => $args{'cache_duration'} || $args{'expires_in'} || '1 hour');
 
 	Database::Abstraction::init({
 		no_entry => 1,
@@ -119,28 +135,21 @@ sub translate
 	# Ensure $self is valid
 	Carp::croak('translate() must be called on an object') unless(Scalar::Util::blessed($self));
 
-	# Assign parameters based on input structure
-	my %params;
-	if(ref($_[0]) eq 'HASH') {
-		%params = %{$_[0]};
-	} elsif((scalar(@_) % 2) == 0) {
-		%params = @_;
-	} elsif(scalar(@_) == 1) {
-		%params = (place => shift, from => 'en');
-	} else {
-		Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2 [ , country => $country ])');
-		return;
+	# Handle hash or hashref arguments
+	my $params = Params::Get::get_params('place', @_);
+	if(scalar(@_) == 1) {
+		$params->{'from'} ||= 'en';
 	}
 
-	my $place = $params{place};
+	my $place = $params->{place};
 	unless(defined $place) {
 		Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2 [ , country => $country ])');
 		return;
 	}
 
 	# Validate 'from' and 'to' languages
-	my $from = $params{from} || $self->_get_language();
-	my $to = $params{to} || $self->_get_language();
+	my $from = $params->{from} || $self->_get_language();
+	my $to = $params->{to} || $self->_get_language();
 	if(!defined($from)) {
 		if(!defined($to)) {
 			Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2 [ , country => $country ])');
@@ -158,7 +167,7 @@ sub translate
 	return $place if($to eq $from);
 
 	# Select database based on country, defaulting to GB
-	my $country = $params{country} || 'GB';
+	my $country = $params->{country} || 'GB';
 
 	my $cache_key = join('|', $place, $from, $to, $country);
 	if(my $cached_result = $self->{cache}->get($cache_key)) {
@@ -322,7 +331,7 @@ sub AUTOLOAD
         } elsif((scalar(@_) % 2) == 0) {
                 %params = @_;
         } elsif(scalar(@_) == 1) {
-                $params{'entry'} = shift;
+                $params{'place'} = shift;
         }
 
 	return $self->translate(to => $to, %params);
