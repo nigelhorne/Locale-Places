@@ -118,7 +118,9 @@ sub new {
 	$directory = File::Spec->catfile($directory, 'data');
 
 	if(!-d $directory) {
-		Carp::carp("$class: can't read $directory");
+		unless($ENV{'AUTOMATED_TESTING'}) {	# Allow some sanity tests to be run
+			Carp::carp("$class: can't find the data directory: $directory");
+		}
 		return;
 	}
 
