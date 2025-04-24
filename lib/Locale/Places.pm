@@ -120,8 +120,8 @@ sub new {
 	if(!-d $directory) {
 		unless($ENV{'AUTOMATED_TESTING'}) {	# Allow some sanity tests to be run
 			Carp::carp("$class: can't find the data directory: $directory");
+			return;
 		}
-		return;
 	}
 
 	$params->{'cache'} ||= CHI->new(driver => 'Memory', datastore => {}, expires_in => $params->{'cache_duration'} || $params->{'expires_in'} || '1 hour');
