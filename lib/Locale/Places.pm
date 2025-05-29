@@ -8,7 +8,8 @@ use warnings;
 
 use Carp;
 use CHI;
-use Config::Abstraction;
+use Class::Debug 0.07;
+use Database::Abstraction;
 use File::Spec;
 use Locale::Places::GB;
 use Locale::Places::US;
@@ -97,29 +98,19 @@ sub new {
 	}
 
 	# Load the configuration from a config file, if provided
-	my $config;
-	if(exists($params->{'config_file'}) && ($config = Config::Abstraction->new(config_dirs => [''], config_file => $params->{'config_file'}, env_prefix => "${class}::")->all())) {
-		# my $config = YAML::XS::LoadFile($params->{'config_file'});
-		if($config->{$class}) {
-			$config = $config->{$class};
-		}
-		$params = { %{$config}, %{$params} };
-	}
+
+	$params = Class::Debug::setup($class, $params);
 
 	my $directory = delete $params->{'directory'};
 	if(!defined($directory)) {
-		if($config && $config->{'directory'}) {
-			$directory = $config->{'directory'};
-		} else {
-			$directory = Module::Info->new_from_loaded(__PACKAGE__)->file();
-			$directory =~ s/\.pm$//;
-		}
+		$directory = Module::Info->new_from_loaded(__PACKAGE__)->file();
+		$directory =~ s/\.pm$//;
 	}
 	$directory = File::Spec->catfile($directory, 'data');
 
 	if(!-d $directory) {
 		unless($ENV{'AUTOMATED_TESTING'}) {	# Allow some sanity tests to be run
-			Carp::carp("$class: can't find the data directory: $directory");
+			Carp::carp("$class: can't find the data directory $directory: $!");
 			return;
 		}
 	}

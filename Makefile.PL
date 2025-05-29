@@ -261,7 +261,7 @@ WriteMakefile(
 	}, TEST_REQUIRES => $test_requires,
 	PREREQ_PM => {
 		'CHI' => 0,
-		'Config::Abstraction' => 0,
+		'Class::Debug' => 0.07,
 		'ExtUtils::MakeMaker' => 6.64,	# 6.64 for TEST_REQUIRES
 		'Database::Abstraction' => 0.04,
 		'DBI' => 0,
