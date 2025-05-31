@@ -66,7 +66,7 @@ sub process_country {
 		return;
 	}
 
-	print "Building $sqlite\n";
+	print "Building $sqlite from $csv\n";
 
 	# Open CSV file
 	my $fin = open_csv($csv, $Config{'osname'});
@@ -108,12 +108,13 @@ sub should_skip_build {
 sub open_csv {
 	my ($csv, $osname) = @_;
 
-	if($osname eq 'MSWin32') {
+	# if($osname eq 'MSWin32') {
+	if(1) {
 		open my $fin, '<', $csv or die "Failed to open $csv: $!";
 		return $fin;
 	}
 
-	my $file = File::Open::NoCache::ReadOnly->new($csv) or die "Failed to open $csv: $!";
+	my $file = File::Open::NoCache::ReadOnly->new(filename => $csv, fatal => 1) or die "Failed to open $csv: $!";
 	aio_readahead($file->fd(), 0, AIO_READAHEAD_SIZE);
 	return $file->fd();
 }

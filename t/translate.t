@@ -41,13 +41,13 @@ TRANSLATE: {
 			delete $ENV{'LANGUAGE'};
 
 			# diag($places->translate(place => 'Canterbury', from => 'en', to => 'fr'));
-			# TODO: {
+			TODO: {
 				# Should be Cantorbéry.  See BUGS in the documentation
 				# https://www.geonames.org/2653877/canterbury.html
-				# local $TODO = 'Canterbury should translate to Cantorbéry';
+				local $TODO = 'Canterbury should translate to Cantorbéry';
 
 				cmp_ok($places->translate({ place => 'Canterbury', from => 'en', to => 'fr' }), 'eq', 'Cantorbéry', 'Translate to Cantorbéry has started to work');
-			# }
+			}
 
 			$ENV{'LANG'} = 'fr_FR';
 			is($places->translate(place => 'Dover', 'from' => 'en'), 'Douvres', 'Target LANG set to French');
