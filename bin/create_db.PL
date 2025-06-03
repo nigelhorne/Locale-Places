@@ -7,12 +7,14 @@
 
 use strict;
 use warnings;
+use autodie qw(:all);
+
 use Config;
 use DBI;
 use File::Copy;
 use File::Spec;
 use Try::Tiny;
-use autodie qw(:all);
+use Scalar::Util;
 
 # Constants
 use	constant	AIO_READAHEAD_SIZE => 1048576;	# 1MB
@@ -89,7 +91,7 @@ sub process_country {
 	# Finalize database
 	finalize_database($dbh, $sqlite);
 
-	# close $fin;
+	close $fin;
 }
 
 sub should_skip_build {
@@ -108,15 +110,14 @@ sub should_skip_build {
 sub open_csv {
 	my ($csv, $osname) = @_;
 
-	# if($osname eq 'MSWin32') {
-	if(1) {
+	if($osname eq 'MSWin32') {
 		open my $fin, '<', $csv or die "Failed to open $csv: $!";
 		return $fin;
 	}
 
 	my $file = File::Open::NoCache::ReadOnly->new(filename => $csv, fatal => 1) or die "Failed to open $csv: $!";
 	aio_readahead($file->fd(), 0, AIO_READAHEAD_SIZE);
-	return $file->fd();
+	return $file;
 }
 
 sub initialize_database {
@@ -150,7 +151,7 @@ sub doit($$) {
 
 	my %queue;
 
-	while(my $line = <$fin>) {
+	while(my $line = linein($fin)) {
 		chomp $line;
 
 		my ($code1, $code2, $type, $data, $ispreferredname, $isshortname) = split(/\t/, $line);
@@ -180,6 +181,16 @@ sub doit($$) {
 	}
 	print scalar(keys %queue), " entries to be added\n";
 	return \%queue;
+}
+
+sub linein
+{
+	my $fin = shift;
+
+	if(Scalar::Util::blessed($fin)) {
+		return $fin->readline();
+	}
+	return <$fin>;
 }
 
 sub flush($$$)

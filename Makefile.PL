@@ -214,7 +214,7 @@ if(scalar(@countries)) {
 	# }
 
 	if($Config{'osname'} ne 'MSWin32') {
-		$build_requires->{'File::Open::NoCache::ReadOnly'} = 0;
+		$build_requires->{'File::Open::NoCache::ReadOnly'} = 0.06;
 		$build_requires->{'IO::AIO'} = 0;
 	}
 } else {
