@@ -91,7 +91,11 @@ sub process_country {
 	# Finalize database
 	finalize_database($dbh, $sqlite);
 
-	close $fin;
+	if(Scalar::Util::blessed($fin)) {
+		$fin->close();
+	} else {
+		close $fin;
+	}
 }
 
 sub should_skip_build {
