@@ -4,7 +4,7 @@ Locale::Places - Translate places between different languages using http://downl
 
 # VERSION
 
-Version 0.14
+Version 0.15
 
 # SYNOPSIS
 
@@ -26,6 +26,13 @@ Takes different argument formats (hash or positional)
 
     Place to store results.
     If none is given, the results will be stored in a temporary internal cache.
+
+- `config_file`
+
+    Points to a configuration file which contains the parameters to `new()`.
+    The file can be in any common format,
+    including `YAML`, `XML`, and `INI`.
+    This allows the parameters to be set at run time.
 
 - `directory`
 
