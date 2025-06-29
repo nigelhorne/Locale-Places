@@ -427,7 +427,7 @@ Copyright 2020-2025 Nigel Horne.
 
 This program is released under the following licence: GPL2
 
-This product uses data from geonames, L<http://download.geonames.org>.
+This product uses data from Geonames, available at L<http://download.geonames.org>.
 
 =cut
 

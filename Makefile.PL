@@ -285,14 +285,18 @@ WriteMakefile(
 	META_MERGE		=> {
 		'meta-spec' => { version => 2 },
 		resources => {
+			homepage => 'https://metacpan.org/pod/Locale::Places',
 			repository => {
+				repository => 'https://github.com/nigelhorne/Locale-Places',
 				type => 'git',
 				url => 'git://github.com/nigelhorne/Locale-Places.git',
 				web => 'https://github.com/nigelhorne/Locale-Places',
+				# license    => 'http://dev.perl.org/licenses/',
 			}, bugtracker => {
+				mailto => 'bug-Locale-Places@rt.cpan.org',
+				url => 'https://github.com/nigelhorne/Locale-Places/issues',
 				# web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Locale-Places',
-				web => 'https://github.com/nigelhorne/Locale-Places/issues',
-				mailto => 'bug-Locale-Places@rt.cpan.org'
+				web => 'https://github.com/nigelhorne/Locale-Places/issues'
 			}
 		},
 	}, PL_FILES => (defined($ENV{'AUTOMATED_TESTING'}) ? {} : {'bin/create_db.PL' => 'bin/create_db'}),
