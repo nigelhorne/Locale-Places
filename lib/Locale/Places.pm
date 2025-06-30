@@ -8,12 +8,12 @@ use warnings;
 
 use Carp;
 use CHI;
-use Class::Debug 0.07;
 use Database::Abstraction;
 use File::Spec;
 use Locale::Places::GB;
 use Locale::Places::US;
 use Module::Info;
+use Object::Configure;
 use Params::Get;
 use Scalar::Util;
 
@@ -99,7 +99,7 @@ sub new {
 
 	# Load the configuration from a config file, if provided
 
-	$params = Class::Debug::setup($class, $params);
+	$params = Object::Configure::configure($class, $params);
 
 	my $directory = delete $params->{'directory'};
 	if(!defined($directory)) {

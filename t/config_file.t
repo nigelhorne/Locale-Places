@@ -16,7 +16,7 @@ my $tempdir = tempdir(CLEANUP => 1);
 my $config_file = File::Spec->catdir($tempdir, 'config.yml');
 
 # Write a fake config
-my $class_name = 'Locale::Places';
+my $class_name = 'Locale__Places';
 
 DumpFile($config_file, {
 	$class_name => { cache => 2 }
@@ -30,7 +30,7 @@ isa_ok($obj, 'Locale::Places');
 cmp_ok($obj->{'cache'}, '==', 2, 'read cache from config');
 
 subtest 'Environment test' => sub {
-	local $ENV{'Locale::Places::cache'} = 3;
+	local $ENV{'Locale__Places__cache'} = 3;
 
 	$obj = Locale::Places->new(config_file => $config_file);
 
