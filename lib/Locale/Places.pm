@@ -250,31 +250,26 @@ sub translate
 		@places = $db->code2({ type => $from, data => $place, ispreferredname => 1, isshortname => undef });
 		if(scalar(@places) == 1) {
 			if(my $data = $db->data({ type => $to, code2 => $places[0] })) {
-				$self->{cache}->set($cache_key, $data);
-				return $data;
+				return $self->{cache}->set($cache_key, $data);
 			}
 			@places = $db->code2({ type => $from, data => $place, ispreferredname => 1, isshortname => 1 });
 			if(scalar(@places) == 1) {
 				if(my $data = $db->data({ type => $to, code2 => $places[0] })) {
-					$self->{cache}->set($cache_key, $data);
-					return $data;
+					return $self->{cache}->set($cache_key, $data);
 				}
 				# Can't find anything
-				$self->{cache}->set($cache_key, $place);
-				return $place;
+				return $self->{cache}->set($cache_key, $place);
 			}
 		} elsif(scalar(@places) == 0) {
 			@places = $db->code2({ type => $from, data => $place, isshortname => undef });
 			if((scalar(@places) == 1) &&
 			   (my $data = $db->data({ type => $to, code2 => $places[0] }))) {
-				$self->{cache}->set($cache_key, $data);
-				return $data;
+				return $self->{cache}->set($cache_key, $data);
 			}
 			@places = $db->code2({ type => $from, data => $place });
 			if((scalar(@places) == 1) &&
 			   (my $data = $db->data({ type => $to, code2 => $places[0] }))) {
-				$self->{cache}->set($cache_key, $data);
-				return $data;
+				return $self->{cache}->set($cache_key, $data);
 			}
 		} else {
 			# Handle multiple translations - see if they happen to be the same
