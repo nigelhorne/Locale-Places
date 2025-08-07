@@ -13,8 +13,8 @@ use File::Spec;
 use Locale::Places::GB;
 use Locale::Places::US;
 use Module::Info;
-use Object::Configure;
-use Params::Get;
+use Object::Configure 0.12;
+use Params::Get 0.13;
 use Scalar::Util;
 
 =encoding utf8
@@ -78,7 +78,7 @@ sub new {
 	my $class = shift;
 
 	# Handle hash or hashref arguments
-	my $params = Params::Get::get_params(undef, @_);
+	my $params = Params::Get::get_params(undef, \@_);
 
 	if(!defined($class)) {
 		if((scalar keys %{$params}) > 0) {
@@ -108,7 +108,7 @@ sub new {
 	}
 	$directory = File::Spec->catfile($directory, 'data');
 
-	if(!-d $directory) {
+	unless((-d $directory) && (-r $directory)) {
 		unless($ENV{'AUTOMATED_TESTING'}) {	# Allow some sanity tests to be run
 			Carp::carp("$class: can't find the data directory $directory: $!");
 			return;
@@ -355,12 +355,15 @@ sub AUTOLOAD
                 $params{'place'} = shift;
         }
 
+	# Validate method name - only allow safe to languages
+	Carp::croak(__PACKAGE__, ": Invalid language name: $to") unless $to =~ /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+
 	return $self->translate(to => $to, %params);
 }
 
 =head1 AUTHOR
 
-Nigel Horne, C<< <njh at bandsman.co.uk> >>
+Nigel Horne, C<< <njh at nigelhorne.com> >>
 
 =head1 BUGS
 
