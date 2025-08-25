@@ -110,6 +110,9 @@ sub new {
 
 	unless((-d $directory) && (-r $directory)) {
 		unless($ENV{'AUTOMATED_TESTING'}) {	# Allow some sanity tests to be run
+			if($params->{'logger'}) {
+				$params->{'logger'}->warn("$class: can't find the data directory $directory: $!");
+			}
 			Carp::carp("$class: can't find the data directory $directory: $!");
 			return;
 		}
@@ -356,9 +359,13 @@ sub AUTOLOAD
         }
 
 	# Validate method name - only allow safe to languages
-	Carp::croak(__PACKAGE__, ": Invalid language name: $to") unless $to =~ /^[a-zA-Z_][a-zA-Z0-9_]*$/;
-
-	return $self->translate(to => $to, %params);
+	if($to =~ /^[a-zA-Z_][a-zA-Z0-9_]*$/) {
+		return $self->translate(to => $to, %params);
+	}
+	if($self->{'logger'}) {
+		$self->notice(__PACKAGE__ . ": Invalid language name: $to");
+	}
+	Carp::carp(__PACKAGE__, ": Invalid language name: $to") unless $to =~ /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 }
 
 =head1 AUTHOR
