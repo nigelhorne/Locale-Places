@@ -349,23 +349,16 @@ sub AUTOLOAD
 
 	return if($to eq 'DESTROY');
 
-	my %params;
-        if(ref($_[0]) eq 'HASH') {
-                %params = %{$_[0]};
-        } elsif((scalar(@_) % 2) == 0) {
-                %params = @_;
-        } elsif(scalar(@_) == 1) {
-                $params{'place'} = shift;
-        }
+	my $params = Params::Get::get_params('place', \@_);
 
 	# Validate method name - only allow safe to languages
 	if($to =~ /^[a-zA-Z_][a-zA-Z0-9_]*$/) {
-		return $self->translate(to => $to, %params);
+		return $self->translate(to => $to, %{$params});
 	}
 	if($self->{'logger'}) {
-		$self->notice(__PACKAGE__ . ": Invalid language name: $to");
+		$self->{'logger'}->notice(__PACKAGE__ . ": Invalid language name: $to");
 	}
-	Carp::carp(__PACKAGE__, ": Invalid language name: $to") unless $to =~ /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+	Carp::carp(__PACKAGE__, ": Invalid language name: $to");
 }
 
 =head1 AUTHOR
