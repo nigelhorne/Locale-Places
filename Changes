@@ -4,6 +4,7 @@ Revision history for Locale::Places
 	Workaround for smokers that don't set AUTOMATED TESTING - GitHub#13
 	Use Object::Configure instead of Class::Debug
 	AUTOLOAD: use Params::Get
+	Added formal specification of the translate method API
 
 0.15	Wed Jun  4 07:11:08 EDT 2025
 	Implement internal cache

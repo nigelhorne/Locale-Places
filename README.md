@@ -62,6 +62,27 @@ Example:
     # Prints "Douvres"
     print Locale::Places->new()->translate({ place => 'Dover', country => 'GB', from => 'en', to => 'fr' });
 
+### API SPECIFICATION
+
+#### INPUT
+
+    {
+      'place' => { 'type' => 'string', 'min' => 2, 'max' => 64 },
+      'from' => { 'type' => 'string', 'min' => 2, 'max' => 64, optional => 1 },
+      'to' => { 'type' => 'string', 'min' => 2, 'max' => 64, optional => 1 },
+      'country' => { 'type' => 'string', 'min' => 2, 'max' => 64, optional => 1 }
+    }
+
+#### OUTPUT
+
+Argument error: croak
+No matches found: undef
+
+    {
+      'type' => 'string',
+      'min' => 1
+    }
+
 ## AUTOLOAD
 
 Translate to the given language, where the routine's name will be the target language.
@@ -73,7 +94,7 @@ Extracts the target language from the method name and calls `translate()` intern
 
 # AUTHOR
 
-Nigel Horne, `<njh at bandsman.co.uk>`
+Nigel Horne, `<njh at nigelhorne.com>`
 
 # BUGS
 
@@ -131,4 +152,4 @@ Copyright 2020-2025 Nigel Horne.
 
 This program is released under the following licence: GPL2
 
-This product uses data from geonames, [http://download.geonames.org](http://download.geonames.org).
+This product uses data from Geonames, available at [http://download.geonames.org](http://download.geonames.org).

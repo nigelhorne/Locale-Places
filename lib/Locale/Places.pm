@@ -15,6 +15,7 @@ use Locale::Places::US;
 use Module::Info;
 use Object::Configure 0.12;
 use Params::Get 0.13;
+use Params::Validate::Strict 0.13;
 use Scalar::Util;
 
 =encoding utf8
@@ -154,6 +155,27 @@ Example:
     # Prints "Douvres"
     print Locale::Places->new()->translate({ place => 'Dover', country => 'GB', from => 'en', to => 'fr' });
 
+=head3 API SPECIFICATION
+
+=head4	INPUT
+
+  {
+    'place' => { 'type' => 'string', 'min' => 2, 'max' => 64 },
+    'from' => { 'type' => 'string', 'min' => 2, 'max' => 64, optional => 1 },
+    'to' => { 'type' => 'string', 'min' => 2, 'max' => 64, optional => 1 },
+    'country' => { 'type' => 'string', 'min' => 2, 'max' => 64, optional => 1 }
+  }
+
+=head4	OUTPUT
+
+Argument error: croak
+No matches found: undef
+
+  {
+    'type' => 'string',
+    'min' => 1
+  }
+
 =cut
 
 sub translate
@@ -164,13 +186,25 @@ sub translate
 	Carp::croak('translate() must be called on an object') unless(Scalar::Util::blessed($self));
 
 	# Handle hash or hashref arguments
-	my $params = Params::Get::get_params('place', @_);
+        my $params = Params::Validate::Strict::validate_strict({
+		args => Params::Get::get_params('place', @_),
+		schema => {
+			'place' => { 'type' => 'string', 'min' => 2, 'max' => 64 },
+			'from' => { 'type' => 'string', 'min' => 2, 'max' => 64, optional => 1 },
+			'to' => { 'type' => 'string', 'min' => 2, 'max' => 64, optional => 1 },
+			'country' => { 'type' => 'string', 'min' => 2, 'max' => 64, optional => 1 }
+		}
+	});
+
 	if(scalar(@_) == 1) {
 		$params->{'from'} ||= 'en';
 	}
 
 	my $place = $params->{place};
 	unless(defined $place) {
+		if(my $logger = $self->logger()) {
+			$logger->warn(__PACKAGE__ . ': usage: translate(place => $place, from => $language1, to => $language2 [ , country => $country ])');
+		}
 		Carp::carp(__PACKAGE__, ': usage: translate(place => $place, from => $language1, to => $language2 [ , country => $country ])');
 		return;
 	}
