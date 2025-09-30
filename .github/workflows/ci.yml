@@ -43,6 +43,16 @@ jobs:
           cpanm --notest --installdeps .
           cpanm -iqn ExtUtils::MakeMaker Test::Most Devel::Cover Devel::Cover::Report::Html
 
+      - name: Make Module
+        env:
+          AUTOMATED_TESTING: 1
+          NO_NETWORK_TESTING: 1
+          NONINTERACTIVE_TESTING: 1
+        run: |
+          # find . -name build.log | xargs cat
+          perl Makefile.PL
+          make
+
       # Optional: run Perl::Critic static checks
       # - name: Run Perl::Critic
       #   run: |
