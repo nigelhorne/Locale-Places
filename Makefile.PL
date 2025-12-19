@@ -245,7 +245,7 @@ if($^O eq 'darwin') {
 
 WriteMakefile(
 	NAME		=> 'Locale::Places',
-	AUTHOR		=> q{Nigel Horne <njh@bandsman.co.uk>},
+	AUTHOR		=> q{Nigel Horne <njh@nigelhorne.com>},
 	VERSION_FROM	=> 'lib/Locale/Places.pm',
 	ABSTRACT_FROM   => 'lib/Locale/Places.pm',
 	((defined($ExtUtils::MakeMaker::VERSION) &&
@@ -270,6 +270,7 @@ WriteMakefile(
 		'Error::Simple' => 0,
 		'File::pfopen' => 0,
 		'File::Spec' => 0,
+		'I18N::LangTags::Detect' => 0,
 		'Module::Info' => 0,
 		'Object::Configure' => 0.12,
 		'Params::Get' => 0.13,

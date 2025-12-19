@@ -10,6 +10,7 @@ use Carp;
 use CHI;
 use Database::Abstraction;
 use File::Spec;
+use I18N::LangTags::Detect;
 use Locale::Places::GB;
 use Locale::Places::US;
 use Module::Info;
@@ -333,7 +334,7 @@ sub translate
 	return; # Return undef if no translation is found
 }
 
-#Determines the system's default language using environment variables:
+# Determines the system's default language using environment variables:
 # 'LANGUAGE', 'LC_ALL', 'LC_MESSAGES', $ENV{'LANG'}.
 # Defaults to English ('en') if no valid language is found.
 
@@ -341,6 +342,11 @@ sub translate
 # https://www.gnu.org/software/gettext/manual/html_node/The-LANGUAGE-variable.html
 sub _get_language
 {
+	for my $tag (I18N::LangTags::Detect::detect()) {
+		if ($tag =~ /^([a-z]{2})/i) {
+			return lc($1);
+		}
+	}
 	if(($ENV{'LANGUAGE'}) && ($ENV{'LANGUAGE'} =~ /^([a-z]{2})/i)) {
 		return lc($1);
 	}
@@ -355,10 +361,10 @@ sub _get_language
 	}
 
 	# if(defined($ENV{'LANG'}) && (($ENV{'LANG'} =~ /^C\./) || ($ENV{'LANG'} eq 'C'))) {
-		# return 'en';
+	#	return 'en';
 	# }
 	return 'en' if (defined $ENV{'LANG'}) && $ENV{'LANG'} =~ /^C(\.|$)/;
-	return;	# undef
+	return; # undef
 }
 
 =head2 AUTOLOAD
