@@ -24,7 +24,7 @@ if(defined($ENV{'GITHUB_ACTION'}) || defined($ENV{'CIRCLECI'}) || defined($ENV{'
 	$ENV{'NO_NETWORK_TESTING'} = 1;
 }
 
-if(!$ENV{'AUTOMATED_TESTING'}) {
+if((!$ENV{'AUTOMATED_TESTING'}) && (!$ENV{'NO_NETWORK_TESTING'})) {
 	isa_ok(Locale::Places->new(), 'Locale::Places', 'Creating Locale::Places object');
 	isa_ok(Locale::Places->new()->new(), 'Locale::Places', 'Cloning Locale::Places object');
 	isa_ok(Locale::Places::new(), 'Locale::Places', 'Creating Locale::Places object');

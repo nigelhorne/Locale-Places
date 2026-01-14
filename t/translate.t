@@ -3,10 +3,11 @@
 use strict;
 use warnings;
 
+use Test::RequiresInternet;
 use Test::Most tests => 28;
+
 use lib 't/lib';
 use MyLogger;
-use Test::RequiresInternet;
 
 BEGIN {
 	use_ok('Locale::Places');
