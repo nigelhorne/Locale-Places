@@ -5,7 +5,6 @@
 use strict;
 use warnings;
 
-use autodie qw(:all);
 use Config;
 use ExtUtils::MakeMaker;
 use IO::Socket::INET;
