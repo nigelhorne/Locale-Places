@@ -420,9 +420,17 @@ For example, is Virginia a state, a town in Illinois or one in Minnesota?
 
 =head1 SEE ALSO
 
-L<Locale::Country::Multilingual> to translate country names.
+=over 4
+
+=item * Test coverage report: L<https://nigelhorne.github.io/Locale-Places/coverage/>
+
+=item * L<Locale::Country::Multilingual> to translate country names.
+
+=back
 
 =head1 SUPPORT
+
+This module is provided as-is without any warranty.
 
 You can find documentation for this module with the perldoc command.
 
@@ -460,7 +468,7 @@ L<https://groups.google.com/g/geonames>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright 2020-2025 Nigel Horne.
+Copyright 2020-2026 Nigel Horne.
 
 This program is released under the following licence: GPL2
 

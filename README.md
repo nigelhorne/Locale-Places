@@ -112,9 +112,12 @@ For example, is Virginia a state, a town in Illinois or one in Minnesota?
 
 # SEE ALSO
 
-[Locale::Country::Multilingual](https://metacpan.org/pod/Locale%3A%3ACountry%3A%3AMultilingual) to translate country names.
+- Test coverage report: [https://nigelhorne.github.io/Locale-Places/coverage/](https://nigelhorne.github.io/Locale-Places/coverage/)
+- [Locale::Country::Multilingual](https://metacpan.org/pod/Locale%3A%3ACountry%3A%3AMultilingual) to translate country names.
 
 # SUPPORT
+
+This module is provided as-is without any warranty.
 
 You can find documentation for this module with the perldoc command.
 
@@ -148,7 +151,7 @@ You can also look for information at:
 
 # LICENCE AND COPYRIGHT
 
-Copyright 2020-2025 Nigel Horne.
+Copyright 2020-2026 Nigel Horne.
 
 This program is released under the following licence: GPL2
 
