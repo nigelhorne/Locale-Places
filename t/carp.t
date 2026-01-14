@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Test::Carp;
 use Test::Most tests => 8;
+use Test::RequiresInternet;
 
 BEGIN {
 	use_ok('Locale::Places');

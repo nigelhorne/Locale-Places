@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Test::Most;
+use Test::RequiresInternet;
 use File::Spec;
 use File::Temp qw/tempfile tempdir/;
 use Scalar::Util;

@@ -6,6 +6,7 @@ use warnings;
 use Test::Most tests => 28;
 use lib 't/lib';
 use MyLogger;
+use Test::RequiresInternet;
 
 BEGIN {
 	use_ok('Locale::Places');
@@ -20,7 +21,7 @@ TRANSLATE: {
 	}
 
 	SKIP: {
-		if((!defined($ENV{'AUTOMATED_TESTING'}) && (!defined($ENV{'NO_NETWORK_TESTING'})) && (-d 'lib/Locale/Places/data'))) {
+		if(-d 'lib/Locale/Places/data') {
 			eval { require 'autodie' };
 
 			like($places->translate(place => 'London', from => 'en', to => 'fr'), qr/Londres$/, 'French for London is Londres');
