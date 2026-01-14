@@ -4,6 +4,8 @@
 
 use strict;
 use warnings;
+
+use autodie qw(:all);
 use Config;
 use ExtUtils::MakeMaker;
 use IO::Socket::INET;
@@ -58,7 +60,7 @@ if(scalar(@countries)) {
 	foreach my $dir(@dirs) {
 		if(! -d $dir) {
 			print "Creating the download directory $dir\n";
-			mkdir $dir || die "$dir: $!";
+			mkdir $dir || die "Failed to create directory $dir: $!";
 		}
 	}
 
@@ -80,15 +82,16 @@ if(scalar(@countries)) {
 
 		if(!-d $cache_dir) {
 			print "Creating the cache directory $cache_dir\n";
-			mkdir $cache_dir, 02755 || die "$cache_dir: $!";
+			mkdir $cache_dir, 02755 || die "Failed to create cache directory $cache_dir: $!";
 		}
+
 		HTTP::Cache::Transparent::init({
 			BasePath => $cache_dir,
 			# Verbose => $opts{'v'} ? 1 : 0,
 			Verbose => 1,
 			NoUpdate => 60 * 60 * 24,
 			MaxAge => 30 * 24
-		}) || die "$0: $cache_dir: $!";
+		}) || die "Failed to initialize HTTP::Cache::Transparent in $cache_dir: $!";
 	} elsif(!$ENV{'AUTOMATED_TESTING'}) {
 		print "Consider installing HTTP::Cache::Transparent to reduce downloads\n";
 	}
@@ -168,19 +171,21 @@ if(scalar(@countries)) {
 			# http://www.cpantesters.org/cpan/report/a03259ca-6c02-1014-bd5e-9b11492b42cd
 			eval 'require IO::Uncompress::Unzip';
 			if($@) {
-				system("unzip $zip") or die "unzip $zip failed";
+				system("unzip $zip") == 0 or die "unzip $zip failed: $?";
 
 				rename "$country.txt", "lib/Locale/Places/data/$country.csv" or die "rename: $!";
 				unlink 'readme.txt';
 			} elsif(open(my $fout, '>', "lib/Locale/Places/data/$country.csv")) {
 				IO::Uncompress::Unzip->import();
+				my $found = 0;
 				if(my $fin = IO::Uncompress::Unzip->new($zip)) {
 					do {
 						if($fin->getHeaderInfo->{'Name'} eq "$country.txt") {
+							$found = 1;
 							while(my $line = $fin->getline()) {
 								print $fout $line or die "Error exploding $zip"
 							}
-							# last; # Gives syntax error that it's not in a loop :-(
+							last;
 						}
 					} while($fin->nextStream());
 				} elsif($ENV{'AUTOMATED_TESTING'}) {
@@ -189,13 +194,19 @@ if(scalar(@countries)) {
 				} else {
 					die "$zip: $IO::Uncompress::Unzip::UnzipError";
 				}
-				close $fout || die "$zip: $!";
+				close $fout or die "Failed to close output file: $!";
+
+				if(!$found && !$ENV{'AUTOMATED_TESTING'}) {
+					die "Could not find $country.txt in $zip";
+				}
 			}
 			# Save disc space, but prevent more than one download
 			# if(open(my $fout, '>', $zip)) {
 				# close($fout);
 			# }
-			truncate $zip, 0;
+			if(-e $zip) {
+				truncate $zip, 0 or warn "Failed to truncate $zip: $!";
+			}
 		}
 
 		die if(!(-r "lib/Locale/Places/data/$country.csv"));
