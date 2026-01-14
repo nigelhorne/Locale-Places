@@ -382,6 +382,7 @@ sub AUTOLOAD
 {
 	our $AUTOLOAD;
 	my $self = shift or return;
+	return if(!defined($AUTOLOAD));
 
 	# Extract the target language from the AUTOLOAD variable
 	my ($to) = $AUTOLOAD =~ /::(\w+)$/;
