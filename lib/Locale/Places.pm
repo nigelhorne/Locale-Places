@@ -376,6 +376,8 @@ Translate to the given language, where the routine's name will be the target lan
 
 Extracts the target language from the method name and calls C<translate()> internally.
 
+Returns a string containing the translated name if found, or undef if no translation exists.
+
 =cut
 
 sub AUTOLOAD
