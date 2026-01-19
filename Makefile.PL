@@ -115,7 +115,7 @@ if(scalar(@countries)) {
 
 		my $use_mirror = 0;
 
-		if(-r $file) {
+		if((-r $file) && (-r "lib/Locale/Places/data/$country.csv")) {
 			# Don't bother checking for a download if the file is less than a week old
 			next if(-M $file < 7);
 			# I get errors with mirror with L:S:WithCache
