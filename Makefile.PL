@@ -152,13 +152,31 @@ if(scalar(@countries)) {
 					exit(0);
 				}
 				die "$url: LWP error $rc";
-			} elsif(LWP::Simple::is_error($rc = LWP::Simple::getstore($url, $file))) {
-				if($ENV{'AUTOMATED_TESTING'}) {
-					print STDERR "Can't download $url";
-					exit(0);
-				}
-				die "$url: LWP error $rc";
 			}
+			if(!-r $file) {
+				my $rc = LWP::Simple::getstore($url, $file);
+				if(LWP::Simple::is_error($rc)) {
+					if($ENV{'AUTOMATED_TESTING'}) {
+						print STDERR "Can't download $url";
+						exit(0);
+					}
+					die "$url: LWP error $rc";
+				}
+			}
+		}
+		if(!-r $file) {
+			print "Download failed with LWP, trying HTTP::Tiny\n";
+				require HTTP::Tiny;
+				HTTP::Tiny->import();
+
+			my $http = HTTP::Tiny->new(
+				timeout => 60,
+				verify_SSL => 1,
+			);
+
+			my $res = $http->mirror($url, $file);
+
+			die "Failed: $res->{status} $res->{reason}" unless $res->{success} && -s $file;
 		}
 		die $file if(!-r $file);
 
@@ -185,7 +203,9 @@ if(scalar(@countries)) {
 							while(my $line = $fin->getline()) {
 								print $fout $line or die "Error exploding $zip"
 							}
-							last;
+							# Don't enable this, because it breaks out of the foreach loop,
+							#	not the do while loop
+							# last;
 						}
 					} while($fin->nextStream());
 				} elsif($ENV{'AUTOMATED_TESTING'}) {
@@ -290,7 +310,7 @@ WriteMakefile(
 		'Text::CSV' => 0,
 		'Text::xSV::Slurp' => 0
 	}, dist => $dist,
-	clean	=> { FILES => 'Locale-Places-*' },
+	clean	=> { FILES => 'Locale-Places-* lib/Locale/Places/data/*' },
 	EXE_FILES	=> [ 'bin/translate' ],
 	# META_ADD => {
 		# provides => { }
@@ -316,5 +336,5 @@ WriteMakefile(
 	# , PM => $pm,
 	# PPM_INSTALL_EXEC	=> 'bash',
 	# PPM_INSTALL_SCRIPT	=> 'bin/create_sqlite',
-	MIN_PERL_VERSION	=> '5.6.2'	# Probably would work, but never tested on earlier versions than this
+	MIN_PERL_VERSION	=> '5.14.0'	# Minimum version that HTTP::Tiny is in the core
 );
