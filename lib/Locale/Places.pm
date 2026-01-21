@@ -425,7 +425,7 @@ For example, is Virginia a state, a town in Illinois or one in Minnesota?
 
 =over 4
 
-=item * Test coverage report: L<https://nigelhorne.github.io/Locale-Places/coverage/>
+=item * L<Test Coverage Report|https://nigelhorne.github.io/Locale-Places/coverage/>
 
 =item * L<Locale::Country::Multilingual> to translate country names.
 

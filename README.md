@@ -92,6 +92,8 @@ Translate to the given language, where the routine's name will be the target lan
 
 Extracts the target language from the method name and calls `translate()` internally.
 
+Returns a string containing the translated name if found, or undef if no translation exists.
+
 # AUTHOR
 
 Nigel Horne, `<njh at nigelhorne.com>`
@@ -112,7 +114,7 @@ For example, is Virginia a state, a town in Illinois or one in Minnesota?
 
 # SEE ALSO
 
-- Test coverage report: [https://nigelhorne.github.io/Locale-Places/coverage/](https://nigelhorne.github.io/Locale-Places/coverage/)
+- [Test Coverage Report](https://nigelhorne.github.io/Locale-Places/coverage/)
 - [Locale::Country::Multilingual](https://metacpan.org/pod/Locale%3A%3ACountry%3A%3AMultilingual) to translate country names.
 
 # SUPPORT
