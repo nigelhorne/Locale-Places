@@ -8,6 +8,7 @@ Revision history for Locale::Places
 	Use I18N::LangTags::Detect andd Test::RequiresInternet
 	Fallback to HTTP::Tiny
 	Only load the required database(s)
+	Document language fallback order
 
 0.15	Wed Jun  4 07:11:08 EDT 2025
 	Implement internal cache

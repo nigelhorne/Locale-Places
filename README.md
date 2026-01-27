@@ -62,6 +62,15 @@ Example:
     # Prints "Douvres"
     print Locale::Places->new()->translate({ place => 'Dover', country => 'GB', from => 'en', to => 'fr' });
 
+### Translation Resolution Order
+
+- 1. Preferred names
+- 2. Non-preferred names
+- 3. Short names
+- 4. Non-short names
+- 5. Single-translation disambiguation
+- 6. Identity fallback
+
 ### API SPECIFICATION
 
 #### INPUT
@@ -100,7 +109,7 @@ Nigel Horne, `<njh at nigelhorne.com>`
 
 # BUGS
 
-Only supports places in GB and US at the moment.
+Only supports places in GB and the US at the moment.
 
 Canterbury no longer translates to Cantorbéry in French.
 This is a problem with the data, which has this line:

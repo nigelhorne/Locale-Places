@@ -155,6 +155,24 @@ Example:
     # Prints "Douvres"
     print Locale::Places->new()->translate({ place => 'Dover', country => 'GB', from => 'en', to => 'fr' });
 
+=head3 Translation Resolution Order
+
+=over 4
+
+=item 1. Preferred names
+
+=item 2. Non-preferred names
+
+=item 3. Short names
+
+=item 4. Non-short names
+
+=item 5. Single-translation disambiguation
+
+=item 6. Identity fallback
+
+=back
+
 =head3 API SPECIFICATION
 
 =head4	INPUT
@@ -402,7 +420,7 @@ sub AUTOLOAD
 	if($self->{'logger'}) {
 		$self->{'logger'}->notice(__PACKAGE__ . ": Invalid language name: $to");
 	}
-	Carp::carp(__PACKAGE__, ": Invalid language name: $to");
+	Carp::croak(__PACKAGE__, ": Invalid language name: $to");
 }
 
 =head1 AUTHOR
