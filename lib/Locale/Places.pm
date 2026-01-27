@@ -11,8 +11,6 @@ use CHI;
 use Database::Abstraction;
 use File::Spec;
 use I18N::LangTags::Detect;
-use Locale::Places::GB;
-use Locale::Places::US;
 use Module::Info;
 use Object::Configure 0.12;
 use Params::Get 0.13;
@@ -105,6 +103,7 @@ sub new {
 
 	my $directory = delete $params->{'directory'};
 	if(!defined($directory)) {
+		# Module::Info path detection may fail under fatpacking or PAR.
 		$directory = Module::Info->new_from_loaded(__PACKAGE__)->file();
 		$directory =~ s/\.pm$//;
 	}
@@ -239,6 +238,9 @@ sub translate
 
 	my $db = $self->{$country} ||= do {
 		my $class = "Locale::Places::$country";
+
+		eval "require $class; 1" && $class->import() unless $class->can('new');
+		Carp::croak("Unsupported country: $country") if $@;
 		$class->new(directory => $self->{directory});
 	};
 
