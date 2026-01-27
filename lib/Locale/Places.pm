@@ -86,7 +86,7 @@ sub new {
 		if((scalar keys %{$params}) > 0) {
 			# Locale::Places::new() used rather than Locale::Places->new()
 			carp(__PACKAGE__, ' use ->new() not ::new() to instantiate');
-			return;
+			Carp::croak(__PACKAGE__ . '->new() must be called as a class or object method');
 		}
 
 		# FIXME: this only works when no arguments are given
@@ -260,11 +260,11 @@ sub translate
 			return $data;
 		}
 	} elsif(scalar(@places) > 1) {
-		# Handle the case when there are more than one preferred value
+		# Handle the case when there is more than one preferred value
 		# but either not all translate or they all translate to the same
 		# value, in which case the duplicate can be ignored
 
-		# If none of them matches then assume there are no translations
+		# If none of them match, then assume there are no translations
 		# available and return that
 
 		my $candidate;
@@ -409,7 +409,7 @@ Nigel Horne, C<< <njh at nigelhorne.com> >>
 
 =head1 BUGS
 
-Only supports places in GB and US at the moment.
+Only supports places in GB and the US at the moment.
 
 Canterbury no longer translates to Cantorbéry in French.
 This is a problem with the data, which has this line:
