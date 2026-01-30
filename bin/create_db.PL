@@ -44,6 +44,12 @@ if(defined($ARGV[0]) && ($ARGV[0] eq '-f')) {
 	exit(0);
 }
 
+if(!-d $dir) {
+	system("$^X Makefile.PL && make");
+}
+
+die "$dir: $!" if(!-d $dir);
+
 if($Config{'osname'} ne 'MSWin32') {
 	require IO::AIO;
 	IO::AIO->import();

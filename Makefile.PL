@@ -286,13 +286,13 @@ WriteMakefile(
 	BUILD_REQUIRES => $build_requires,
 	CONFIGURE_REQUIRES => {
 		'Config' => 0,
+		'ExtUtils::MakeMaker' => 6.64,	# 6.64 for TEST_REQUIRES
 		'File::Which' => 0,
 		'LWP::Simple' => 0,
 		'Try::Tiny' => 0,
 	}, TEST_REQUIRES => $test_requires,
 	PREREQ_PM => {
 		'CHI' => 0,
-		'ExtUtils::MakeMaker' => 6.64,	# 6.64 for TEST_REQUIRES
 		'Database::Abstraction' => 0.04,
 		'DBI' => 0,
 		'DBD::CSV' => 0,
