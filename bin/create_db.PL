@@ -40,13 +40,8 @@ my $dir = 'lib/Locale/Places/data';
 my $force_flag;
 if(defined($ARGV[0]) && ($ARGV[0] eq '-f')) {
 	$force_flag++;
-} elsif($ENV{'AUTOMATED_TESTING'}) {
+} elsif($ENV{'AUTOMATED_TESTING'} || $ENV{'NO_NETWORK_TESTING'}) {
 	exit(0);
-}
-
-if(!-d $dir) {
-	system("$^X Makefile.PL && make");
-	exit;
 }
 
 die "$dir: $!" if(!-d $dir);
