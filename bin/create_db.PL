@@ -46,6 +46,7 @@ if(defined($ARGV[0]) && ($ARGV[0] eq '-f')) {
 
 if(!-d $dir) {
 	system("$^X Makefile.PL && make");
+	exit;
 }
 
 die "$dir: $!" if(!-d $dir);
