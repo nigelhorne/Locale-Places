@@ -1,6 +1,7 @@
 bin/create_db.PL
 bin/translate
 Changes
+cpanfile
 lib/Locale/Places.pm
 lib/Locale/Places/GB.pm
 lib/Locale/Places/US.pm
