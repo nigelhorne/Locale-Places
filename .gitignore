@@ -34,5 +34,10 @@ inc/
 /pm_to_blib
 /*.zip
 
+schemas/
+\.claude
+CLAUDE.md
+
 *.swp
 lib/Locale/Places/data/
+lib/Locale/Places/databases/
