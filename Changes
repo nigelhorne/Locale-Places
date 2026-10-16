@@ -1,6 +1,6 @@
 Revision history for Locale::Places
 
-0.17
+0.17	Fri Oct 16 01:49:50 PM EDT 2026
 	Fixed testing with NO_NETWORK_TESTING
 	Use Test::Log::Abstraction
 	Bump minimum versions and fix t/carp.t failing with latest Params::Validate::Strict
