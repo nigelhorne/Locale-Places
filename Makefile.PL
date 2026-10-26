@@ -42,7 +42,8 @@ my $test_requires = {
 	'Test::Log::Abstraction' => 0,
 	'Test::Most' => 0,
 	'Test::Needs' => 0,
-	'Test::RequiresInternet' => 0
+	'Test::RequiresInternet' => 0,
+	'Test::Which' => 0,
 };
 
 if(scalar(@countries)) {
