@@ -75,6 +75,7 @@ lib/Locale/Places/databases/readme.txt
 \.sql$
 \.csv$
 \.zip$
+\.checked$
 Locale-.*
 
 # Super-linter per-repo tuning files - not for distribution

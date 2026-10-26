@@ -1,5 +1,10 @@
 Revision history for Locale::Places
 
+0.18
+	Makefile.PL: use If-Modified-Since so that unchanged GeoNames data isn't re-downloaded
+	Makefile.PL: re-extract the CSV when a newer zip is downloaded
+	Makefile.PL: use the existing data when download.geonames.org is unreachable
+
 0.17	Fri Oct 16 01:49:50 PM EDT 2026
 	Fixed testing with NO_NETWORK_TESTING
 	Use Test::Log::Abstraction

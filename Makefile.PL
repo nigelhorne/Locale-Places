@@ -9,7 +9,10 @@ use Config;
 use ExtUtils::MakeMaker;
 use IO::Socket::INET;
 
+use constant CHECK_INTERVAL => 7;	# Days between checks for newer GeoNames data
+
 my $site;
+my $data_dir = 'lib/Locale/Places/data';
 
 # Test for broken smokers that don't set AUTOMATED_TESTING
 if(my $reporter = $ENV{'PERL_CPAN_REPORTER_CONFIG'}) {
@@ -43,194 +46,33 @@ my $test_requires = {
 };
 
 if(scalar(@countries)) {
-	if(!IO::Socket::INET->new(PeerAddr => "$site:80", Timeout => 5)) {
-		print STDERR "NA: Can't connect to $site\n";
-		exit(0);
-	}
-
 	$build_requires = {	# For bin/create_sqlite
 		'DBI' => 0,
 		'File::Copy' => 0,
 	};
 	$test_requires->{'autodie'} = 0;
 
-	my @dirs = (
-		'lib/Locale/Places/data',
-	);
-
-	foreach my $dir(@dirs) {
-		if(! -d $dir) {
-			print "Creating the download directory $dir\n";
-			mkdir $dir || die "Failed to create directory $dir: $!";
-		}
+	if(! -d $data_dir) {
+		print "Creating the download directory $data_dir\n";
+		mkdir $data_dir or die "Failed to create directory $data_dir: $!";
 	}
 
-	eval { require 'autodie' };
+	# Only go to the network for countries that haven't been checked recently
+	my @stale = grep { !is_fresh($_) } @countries;
 
-	# unlink('lib/Locale/Places/data/GB.sql');
-	if(eval { require HTTP::Cache::Transparent }) {
-		HTTP::Cache::Transparent->import();
-		my $cache_dir;
-		if(my $e = $ENV{'CACHE_DIR'}) {
-			$cache_dir = File::Spec->catfile($e, 'http-cache-transparent');
+	if(scalar(@stale)) {
+		if(IO::Socket::INET->new(PeerAddr => "$site:443", Timeout => 5)) {
+			foreach my $country(@stale) {
+				fetch_country($country);
+			}
+		} elsif(grep { !-r "$data_dir/$_.csv" } @countries) {
+			print STDERR "NA: Can't connect to $site\n";
+			exit(0);
 		} else {
-			require File::HomeDir;
-			File::HomeDir->import();
-
-			# $cache_dir = File::Spec->catfile(File::Spec->tmpdir(), 'cache', 'http-cache-transparent');
-			$cache_dir = File::Spec->catfile(File::HomeDir->my_home(), '.cache', 'http-cache-transparent');
+			print STDERR "Can't connect to $site, using the existing data\n";
 		}
-
-		if(!-d $cache_dir) {
-			print "Creating the cache directory $cache_dir\n";
-			mkdir $cache_dir, 02755 || die "Failed to create cache directory $cache_dir: $!";
-		}
-
-		HTTP::Cache::Transparent::init({
-			BasePath => $cache_dir,
-			# Verbose => $opts{'v'} ? 1 : 0,
-			Verbose => 1,
-			NoUpdate => 60 * 60 * 24,
-			MaxAge => 30 * 24
-		}) || die "Failed to initialize HTTP::Cache::Transparent in $cache_dir: $!";
-	} elsif(!$ENV{'AUTOMATED_TESTING'}) {
-		print "Consider installing HTTP::Cache::Transparent to reduce downloads\n";
-	}
-
-	my $use_withcache;
-	if(eval { require LWP::Simple::WithCache; }) {
-		LWP::Simple::WithCache->import();
-		$use_withcache = 1;
 	} else {
-		require LWP::Simple;
-		LWP::Simple->import();
-
-		if(!$ENV{'AUTOMATED_TESTING'}) {
-			print "Consider installing LWP::Simple::WithCache to reduce downloads\n";
-		}
-	}
-
-	foreach my $country(@countries) {
-		my $url = "https://$site/export/dump/alternatenames/$country.zip";
-		my $file = "lib/Locale/Places/data/$country.zip";
-
-		my $use_mirror = 0;
-
-		if((-r $file) && (-r "lib/Locale/Places/data/$country.csv")) {
-			# Don't bother checking for a download if the file is less than a week old
-			next if(-M $file < 7);
-			# I get errors with mirror with L:S:WithCache
-			#	that the temporary file is unavailable
-			if(!$use_withcache) {
-				# Only download if a newer version is available
-				$use_mirror = 1;
-			}
-			unlink $file;	# Don't leave anything stale around
-		}
-
-		if($use_mirror) {
-			print "Downloading $url to $file if a newer version is available\n";
-			if($use_withcache &&
-			   LWP::Simple::WithCache::is_error(my $rc = LWP::Simple::WithCache::mirror($url, $file))) {
-				if($ENV{'AUTOMATED_TESTING'}) {
-					print STDERR "Can't download $url";
-					exit(0);
-				}
-				die "$url: LWP error $rc";
-			} elsif(LWP::Simple::is_error($rc = LWP::Simple::mirror($url, $file))) {
-				if($ENV{'AUTOMATED_TESTING'}) {
-					print STDERR "Can't download $url";
-					exit(0);
-				}
-				die "$url: LWP error $rc";
-			}
-		} else {
-			print "Downloading $url to $file\n";
-			if($use_withcache &&
-			   LWP::Simple::WithCache::is_error(my $rc = LWP::Simple::WithCache::getstore($url, $file))) {
-				if($ENV{'AUTOMATED_TESTING'}) {
-					print STDERR "Can't download $url";
-					exit(0);
-				}
-				die "$url: LWP error $rc";
-			}
-			if(!-r $file) {
-				my $rc = LWP::Simple::getstore($url, $file);
-				if(LWP::Simple::is_error($rc)) {
-					if($ENV{'AUTOMATED_TESTING'}) {
-						print STDERR "Can't download $url";
-						exit(0);
-					}
-					die "$url: LWP error $rc";
-				}
-			}
-		}
-		if(!-r $file) {
-			print "Download failed with LWP, trying HTTP::Tiny\n";
-				require HTTP::Tiny;
-				HTTP::Tiny->import();
-
-			my $http = HTTP::Tiny->new(
-				timeout => 60,
-				verify_SSL => 1,
-			);
-
-			my $res = $http->mirror($url, $file);
-
-			die "Failed: $res->{status} $res->{reason}" unless $res->{success} && -s $file;
-		}
-		die $file if(!-r $file);
-
-		if(!(-r "lib/Locale/Places/data/$country.csv")) {
-			my $zip = "lib/Locale/Places/data/$country.zip";
-
-			print "Exploding $zip\n";
-
-			# Try inline as the external program fails on Windows
-			# http://www.cpantesters.org/cpan/report/a03259ca-6c02-1014-bd5e-9b11492b42cd
-			eval 'require IO::Uncompress::Unzip';
-			if($@) {
-				system("unzip $zip") == 0 or die "unzip $zip failed: $?";
-
-				rename "$country.txt", "lib/Locale/Places/data/$country.csv" or die "rename: $!";
-				unlink 'readme.txt';
-			} elsif(open(my $fout, '>', "lib/Locale/Places/data/$country.csv")) {
-				IO::Uncompress::Unzip->import();
-				my $found = 0;
-				if(my $fin = IO::Uncompress::Unzip->new($zip)) {
-					do {
-						if($fin->getHeaderInfo->{'Name'} eq "$country.txt") {
-							$found = 1;
-							while(my $line = $fin->getline()) {
-								print $fout $line or die "Error exploding $zip"
-							}
-							# Don't enable this, because it breaks out of the foreach loop,
-							#	not the do while loop
-							# last;
-						}
-					} while($fin->nextStream());
-				} elsif($ENV{'AUTOMATED_TESTING'}) {
-					print STDERR "$zip: $IO::Uncompress::Unzip::UnzipError\n";
-					exit(0);
-				} else {
-					die "$zip: $IO::Uncompress::Unzip::UnzipError";
-				}
-				close $fout or die "Failed to close output file: $!";
-
-				if(!$found && !$ENV{'AUTOMATED_TESTING'}) {
-					die "Could not find $country.txt in $zip";
-				}
-			}
-			# Save disc space, but prevent more than one download
-			# if(open(my $fout, '>', $zip)) {
-				# close($fout);
-			# }
-			if(-e $zip) {
-				truncate $zip, 0 or warn "Failed to truncate $zip: $!";
-			}
-		}
-
-		die if(!(-r "lib/Locale/Places/data/$country.csv"));
+		print "Downloaded data was checked less than ", CHECK_INTERVAL, " days ago\n";
 	}
 
 	# my $pm = {
@@ -289,7 +131,9 @@ WriteMakefile(
 		'Config' => 0,
 		'ExtUtils::MakeMaker' => 6.64,	# 6.64 for TEST_REQUIRES
 		'File::Which' => 0,
-		'LWP::Simple' => 0,
+		'HTTP::Tiny' => 0,
+		'IO::Uncompress::Unzip' => 0,
+		'LWP::UserAgent' => 0,
 		'Try::Tiny' => 0,
 	}, TEST_REQUIRES => $test_requires,
 	PREREQ_PM => {
@@ -339,3 +183,112 @@ WriteMakefile(
 	# PPM_INSTALL_SCRIPT	=> 'bin/create_sqlite',
 	MIN_PERL_VERSION	=> '5.14.0'	# Minimum version that HTTP::Tiny is in the core
 );
+
+# Has $country been downloaded and checked for updates recently?
+sub is_fresh
+{
+	my $country = shift;
+
+	my $stamp = "$data_dir/$country.checked";
+
+	return (-r "$data_dir/$country.csv") && (-r $stamp) && (-M $stamp < CHECK_INTERVAL);
+}
+
+# Fetch $country.zip only if the server has a newer copy, then extract it.
+# The zip is kept as a 0-byte file whose mtime is the server's Last-Modified
+#	time, so that the next check is a cheap If-Modified-Since request
+sub fetch_country
+{
+	my $country = shift;
+
+	my $url = "https://$site/export/dump/alternatenames/$country.zip";
+	my $zip = "$data_dir/$country.zip";
+	my $csv = "$data_dir/$country.csv";
+
+	# Without the CSV a "304 Not Modified" would leave us with nothing to extract
+	unlink $zip if(-e $zip && !-r $csv);
+
+	if(-e $zip) {
+		print "Downloading $url if a newer version is available\n";
+	} else {
+		print "Downloading $url\n";
+	}
+
+	my $status = mirror($url, $zip);
+
+	if(($status == 304) && (-r $csv)) {
+		print "$csv is up to date\n";
+	} else {
+		explode($country, $zip, $csv);
+
+		# Save disc space, but keep the mtime for the next If-Modified-Since
+		my $mtime = (stat($zip))[9];
+		truncate $zip, 0 or warn "Failed to truncate $zip: $!";
+		utime $mtime, $mtime, $zip;
+	}
+
+	# Record when we last checked, so that we don't hit the server on every build
+	open(my $fout, '>', "$data_dir/$country.checked") or die "$data_dir/$country.checked: $!";
+	close $fout;
+}
+
+# Conditional GET of $url into $file, returns the HTTP status (200 or 304)
+sub mirror
+{
+	my ($url, $file) = @_;
+
+	my ($status, $reason);
+
+	require HTTP::Tiny;
+	if(HTTP::Tiny->can_ssl()) {
+		my $res = HTTP::Tiny->new(timeout => 60, verify_SSL => 1)->mirror($url, $file);
+		($status, $reason) = ($res->{'status'}, $res->{'reason'});
+		$reason .= ": $res->{content}" if($status == 599);
+	} else {
+		require LWP::UserAgent;
+		my $res = LWP::UserAgent->new(timeout => 60)->mirror($url, $file);
+		($status, $reason) = ($res->code(), $res->message());
+	}
+
+	return $status if(($status == 200) || ($status == 304));
+
+	if($ENV{'AUTOMATED_TESTING'}) {
+		print STDERR "Can't download $url: $status $reason\n";
+		exit(0);
+	}
+	die "$url: $status $reason";
+}
+
+# Extract $country.txt from $zip into $csv, via a temporary file so that an
+#	interrupted build doesn't leave a truncated CSV that looks valid
+sub explode
+{
+	my ($country, $zip, $csv) = @_;
+
+	print "Exploding $zip\n";
+
+	require IO::Uncompress::Unzip;
+
+	my $tmp = "$csv.tmp";
+	open(my $fout, '>', $tmp) or die "$tmp: $!";
+
+	my $fin = IO::Uncompress::Unzip->new($zip, Name => "$country.txt");
+	if(!$fin) {
+		close $fout;
+		unlink $tmp;
+		if($ENV{'AUTOMATED_TESTING'}) {
+			print STDERR "$zip: $IO::Uncompress::Unzip::UnzipError\n";
+			exit(0);
+		}
+		die "$zip: $IO::Uncompress::Unzip::UnzipError";
+	}
+	while(my $line = $fin->getline()) {
+		print $fout $line or die "Error exploding $zip: $!";
+	}
+	$fin->close();
+	close $fout or die "Failed to close $tmp: $!";
+
+	die "Could not find $country.txt in $zip" if(!-s $tmp);
+
+	rename $tmp, $csv or die "rename $tmp to $csv: $!";
+}
